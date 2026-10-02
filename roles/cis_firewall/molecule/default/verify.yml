@@ -1,0 +1,11 @@
+- name: Verify cis_firewall
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+    - name: Required packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'ufw' in ansible_facts.packages"

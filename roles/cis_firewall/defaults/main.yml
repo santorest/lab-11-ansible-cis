@@ -1,0 +1,2 @@
+cis_firewall_allow_out: ["53/udp", "53/tcp", "80/tcp", "443/tcp", "123/udp"]
+cis_exception_ids: []

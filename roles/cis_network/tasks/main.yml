@@ -1,0 +1,21 @@
+- name: 3.3.x | Network kernel parameters
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/60-cis-network.conf
+    sysctl_set: true
+    reload: true
+  loop: "{{ cis_network_sysctl | dict2items }}"
+  when: "'3.3' not in cis_exception_ids"
+  tags: [cis_3_3, cis_network, molecule-notest]
+
+- name: 3.2.x | Uncommon network protocols are not available
+  ansible.builtin.copy:
+    dest: "/etc/modprobe.d/cis-{{ item }}.conf"
+    content: "install {{ item }} /bin/false\nblacklist {{ item }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: [dccp, tipc, rds, sctp]
+  when: "'3.2' not in cis_exception_ids"
+  tags: [cis_3_2, cis_network]
