@@ -1,0 +1,11 @@
+- name: Reload sshd
+  ansible.builtin.systemd_service:
+    name: ssh
+    state: reloaded
+  failed_when: false
+
+- name: Update PAM
+  ansible.builtin.command: pam-auth-update --enable unix pwquality cis-faillock cis-faillock-notify cis-pwhistory
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  changed_when: true

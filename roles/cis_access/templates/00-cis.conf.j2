@@ -1,0 +1,5 @@
+# Managed by Ansible (cis_access). Read before any other drop-in: sshd uses the first value it sees.
+{% for key, value in cis_sshd.items() %}
+{{ key }} {{ value }}
+{% endfor %}
+AllowGroups {{ cis_ssh_allow_groups | join(' ') }}

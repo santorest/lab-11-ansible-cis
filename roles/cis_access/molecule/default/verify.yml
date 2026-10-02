@@ -1,0 +1,47 @@
+- name: Verify cis_access
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Read /etc/ssh/sshd_config.d/00-cis.conf
+      ansible.builtin.slurp:
+        src: /etc/ssh/sshd_config.d/00-cis.conf
+      register: cis_check_0
+    - name: /etc/ssh/sshd_config.d/00-cis.conf contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'PermitRootLogin no' in (cis_check_0.content | b64decode)
+    - name: Read /etc/sudoers.d/60-cis
+      ansible.builtin.slurp:
+        src: /etc/sudoers.d/60-cis
+      register: cis_check_1
+    - name: /etc/sudoers.d/60-cis contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'Defaults use_pty' in (cis_check_1.content | b64decode)
+    - name: Read /etc/security/pwquality.conf.d/60-cis.conf
+      ansible.builtin.slurp:
+        src: /etc/security/pwquality.conf.d/60-cis.conf
+      register: cis_check_2
+    - name: /etc/security/pwquality.conf.d/60-cis.conf contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'minlen = 14' in (cis_check_2.content | b64decode)
+    - name: Read /etc/login.defs
+      ansible.builtin.slurp:
+        src: /etc/login.defs
+      register: cis_check_3
+    - name: /etc/login.defs contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'PASS_MAX_DAYS\t365' in (cis_check_3.content | b64decode)
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+    - name: Required packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'libpam-pwquality' in ansible_facts.packages"

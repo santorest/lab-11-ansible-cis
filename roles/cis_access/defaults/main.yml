@@ -1,0 +1,30 @@
+cis_sshd:
+  Banner: /etc/issue.net
+  Ciphers: "aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+  ClientAliveInterval: "15"
+  ClientAliveCountMax: "3"
+  DisableForwarding: "yes"
+  GSSAPIAuthentication: "no"
+  HostbasedAuthentication: "no"
+  IgnoreRhosts: "yes"
+  # yamllint disable-line rule:line-length
+  KexAlgorithms: "sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256"
+  LoginGraceTime: "60"
+  LogLevel: INFO
+  MACs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+  MaxAuthTries: "4"
+  MaxSessions: "10"
+  MaxStartups: "10:30:60"
+  PermitEmptyPasswords: "no"
+  PermitRootLogin: "no"
+  PermitUserEnvironment: "no"
+  UsePAM: "yes"
+cis_ssh_allow_groups: [sudo]
+cis_su_group: sugroup
+cis_sudo_secure_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+cis_pass_max_days: 365
+cis_pass_min_days: 1
+cis_pass_warn_age: 7
+cis_inactive_days: 45
+cis_shell_timeout: 900
+cis_exception_ids: []
