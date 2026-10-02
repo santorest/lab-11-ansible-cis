@@ -1,0 +1,118 @@
+- name: 1.1.1.x | Unused filesystem kernel modules are not available
+  ansible.builtin.copy:
+    dest: "/etc/modprobe.d/cis-{{ item }}.conf"
+    content: "install {{ item }} /bin/false\nblacklist {{ item }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ cis_disabled_fs_modules }}"
+  when: "'1.1.1' not in cis_exception_ids"
+  tags: [cis_1_1_1, cis_initial_setup]
+
+- name: 1.1.1.x | Unused filesystem kernel modules are not loaded
+  community.general.modprobe:
+    name: "{{ item | replace('-', '_') }}"
+    state: absent
+  loop: "{{ cis_disabled_fs_modules }}"
+  when: "'1.1.1' not in cis_exception_ids"
+  tags: [cis_1_1_1, cis_initial_setup, molecule-notest]
+
+- name: 1.1.2.2.x | /dev/shm is mounted nodev,nosuid,noexec
+  ansible.posix.mount:
+    path: /dev/shm
+    src: tmpfs
+    fstype: tmpfs
+    opts: defaults,nodev,nosuid,noexec
+    state: mounted
+  when: "'1.1.2.2' not in cis_exception_ids"
+  tags: [cis_1_1_2_2, cis_initial_setup, molecule-notest]
+
+- name: 1.3.1.1 | AppArmor and its utilities are installed
+  ansible.builtin.apt:
+    name: [apparmor, apparmor-utils]
+    state: present
+  when: "'1.3.1.1' not in cis_exception_ids"
+  tags: [cis_1_3_1_1, cis_initial_setup]
+
+- name: 1.3.1.2 | AppArmor is enabled in the bootloader configuration
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX="'
+    line: 'GRUB_CMDLINE_LINUX="{{ cis_grub_cmdline }}"'
+  notify: Update grub
+  when: "'1.3.1.2' not in cis_exception_ids"
+  tags: [cis_1_3_1_2, cis_initial_setup, molecule-notest]
+
+- name: 1.3.1.3 | AppArmor profiles flagged unconfined (find)
+  ansible.builtin.command: grep -lE 'flags=\(.*unconfined.*\)' -r /etc/apparmor.d --include=* -s
+  register: cis_unconfined_profiles
+  changed_when: false
+  failed_when: cis_unconfined_profiles.rc > 1
+  when: "'1.3.1.3' not in cis_exception_ids"
+  tags: [cis_1_3_1_3, cis_initial_setup, molecule-notest]
+
+- name: 1.3.1.3 | AppArmor profiles flagged unconfined are put in complain mode
+  ansible.builtin.command: aa-complain {{ item }}
+  loop: "{{ cis_unconfined_profiles.stdout_lines | default([]) }}"
+  changed_when: true
+  when: "'1.3.1.3' not in cis_exception_ids"
+  tags: [cis_1_3_1_3, cis_initial_setup, molecule-notest]
+
+- name: 1.4.1 | Bootloader superuser and password (hash generated once on this host)
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      pw=$(openssl rand -hex 24)
+      hash=$(printf '%s\n%s\n' "$pw" "$pw" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf2/ {print $NF}')
+      umask 077
+      printf '#!/bin/sh\ncat <<EOF\nset superusers="%s"\npassword_pbkdf2 %s %s\nEOF\n' \
+        "{{ cis_grub_superuser }}" "{{ cis_grub_superuser }}" "$hash" > /etc/grub.d/01_users
+      chmod 0700 /etc/grub.d/01_users
+    executable: /bin/bash
+    creates: /etc/grub.d/01_users
+  notify: Update grub
+  when: "'1.4.1' not in cis_exception_ids"
+  tags: [cis_1_4_1, cis_initial_setup, molecule-notest]
+
+- name: 1.4.1 | Normal boot entries stay unrestricted (only editing needs the password)
+  ansible.builtin.lineinfile:
+    path: /etc/grub.d/10_linux
+    regexp: '^CLASS="--class gnu-linux --class gnu --class os'
+    line: 'CLASS="--class gnu-linux --class gnu --class os --unrestricted"'
+  notify: Update grub
+  when: "'1.4.1' not in cis_exception_ids"
+  tags: [cis_1_4_1, cis_initial_setup, molecule-notest]
+
+- name: 1.5.x | ASLR, ptrace and setuid core dumps
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/60-cis-process.conf
+    sysctl_set: true
+    reload: true
+  loop:
+    - {key: kernel.randomize_va_space, value: "2"}
+    - {key: kernel.yama.ptrace_scope, value: "1"}
+    - {key: fs.suid_dumpable, value: "0"}
+  when: "'1.5' not in cis_exception_ids"
+  tags: [cis_1_5, cis_initial_setup, molecule-notest]
+
+- name: 1.5.3 | Core dumps are restricted for users
+  ansible.builtin.lineinfile:
+    path: /etc/security/limits.conf
+    regexp: '^\*\s+hard\s+core\s'
+    line: "*               hard    core            0"
+    insertbefore: "^# End of file"
+  when: "'1.5.3' not in cis_exception_ids"
+  tags: [cis_1_5_3, cis_initial_setup]
+
+- name: 1.6.2 / 1.6.3 | Login banners carry the warning and no OS information
+  ansible.builtin.copy:
+    dest: "{{ item }}"
+    content: "{{ cis_banner_text }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: [/etc/issue, /etc/issue.net]
+  when: "'1.6' not in cis_exception_ids"
+  tags: [cis_1_6, cis_initial_setup]

@@ -1,0 +1,32 @@
+- name: Verify cis_initial_setup
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Read /etc/modprobe.d/cis-cramfs.conf
+      ansible.builtin.slurp:
+        src: /etc/modprobe.d/cis-cramfs.conf
+      register: cis_check_0
+    - name: /etc/modprobe.d/cis-cramfs.conf contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'install cramfs /bin/false' in (cis_check_0.content | b64decode)
+    - name: Read /etc/issue
+      ansible.builtin.slurp:
+        src: /etc/issue
+      register: cis_check_1
+    - name: /etc/issue contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'Authorized users only' in (cis_check_1.content | b64decode)
+    - name: Read /etc/security/limits.conf
+      ansible.builtin.slurp:
+        src: /etc/security/limits.conf
+      register: cis_check_2
+    - name: /etc/security/limits.conf contains the expected setting
+      ansible.builtin.assert:
+        that:
+          - >-
+            'hard    core            0' in (cis_check_2.content | b64decode)
