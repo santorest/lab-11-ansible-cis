@@ -23,7 +23,8 @@ def test_comparison_finds_fixes_regressions_and_claimed_failures(before: bytes, 
     controls, exceptions = load_controls(F / "controls.yml"), load_exceptions(F / "group_vars.yml")
     c = compare(parse_results(before, PROFILE), parse_results(after, PROFILE), controls, exceptions)
     assert c.fixed == (full_id("sshd_disable_root_login"), full_id("sysctl_net_ipv4_ip_forward"))
-    assert c.regressions == (full_id("banner_etc_issue"),)  # passed before, fails after: reported although the score rose
+    # passed before, fails after: reported although the score rose
+    assert c.regressions == (full_id("banner_etc_issue"),)
     assert c.claimed_failing == (full_id("banner_etc_issue"),)
     assert c.excepted_failing == (full_id("partition_for_tmp"),) and c.open_failing == ()
 
