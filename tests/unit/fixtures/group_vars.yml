@@ -1,0 +1,5 @@
+cis_exceptions:
+  - cis: "1.1.2.1.1"
+    rules: [partition_for_tmp]
+    reason: "a booted CI runner cannot be repartitioned"
+    owner_role: platform team

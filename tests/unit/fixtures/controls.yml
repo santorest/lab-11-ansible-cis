@@ -1,0 +1,4 @@
+controls:
+  - {cis: "5.1.20", title: "Ensure sshd PermitRootLogin is disabled", role: cis_access, rules: [sshd_disable_root_login]}
+  - {cis: "3.3.1", title: "Ensure ip forwarding is disabled", role: cis_network, rules: [sysctl_net_ipv4_ip_forward]}
+  - {cis: "1.6.2", title: "Ensure local login warning banner is configured properly", role: cis_initial_setup, rules: [banner_etc_issue]}
