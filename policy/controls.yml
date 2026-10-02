@@ -1,0 +1,89 @@
+# What the roles claim to remediate: CIS id -> SSG rules (short ids from SSG v0.1.82, cis_level1_server).
+# Built from the baseline scan of spike run 37054867659: every rule that failed on the default runner and that a
+# role fixes. The gate fails if any of these rules still fails after hardening.
+controls:
+  - {cis: "1.1.1.1", title: "Disable Mounting of cramfs", role: cis_initial_setup, rules: [kernel_module_cramfs_disabled]}
+  - {cis: "1.1.1.2", title: "Disable Mounting of freevxfs", role: cis_initial_setup, rules: [kernel_module_freevxfs_disabled]}
+  - {cis: "1.1.1.3", title: "Disable Mounting of hfs", role: cis_initial_setup, rules: [kernel_module_hfs_disabled]}
+  - {cis: "1.1.1.4", title: "Disable Mounting of hfsplus", role: cis_initial_setup, rules: [kernel_module_hfsplus_disabled]}
+  - {cis: "1.1.1.5", title: "Disable Mounting of jffs2", role: cis_initial_setup, rules: [kernel_module_jffs2_disabled]}
+  - {cis: "1.1.1.9", title: "Disable Modprobe Loading of USB Storage Driver", role: cis_initial_setup, rules: [kernel_module_usb-storage_disabled]}
+  - {cis: "1.1.2.2.2", title: "Add nodev Option to /dev/shm", role: cis_initial_setup, rules: [mount_option_dev_shm_nodev]}
+  - {cis: "1.1.2.2.3", title: "Add nosuid Option to /dev/shm", role: cis_initial_setup, rules: [mount_option_dev_shm_nosuid]}
+  - {cis: "1.1.2.2.4", title: "Add noexec Option to /dev/shm", role: cis_initial_setup, rules: [mount_option_dev_shm_noexec]}
+  - {cis: "1.3.1.1", title: "Ensure AppArmor Utils is installed", role: cis_initial_setup, rules: [package_apparmor-utils_installed]}
+  - {cis: "1.3.1.2", title: "Ensure AppArmor is enabled in the bootloader configuration", role: cis_initial_setup, rules: [grub2_enable_apparmor]}
+  - {cis: "1.3.1.3", title: "All AppArmor Profiles are in enforce or complain mode", role: cis_initial_setup, rules: [all_apparmor_profiles_in_enforce_complain_mode]}
+  - {cis: "1.4.1", title: "Set Boot Loader Password in grub2", role: cis_initial_setup, rules: [grub2_password, grub2_uefi_password]}
+  - {cis: "1.5.1", title: "Enable Randomized Layout of Virtual Address Space", role: cis_initial_setup, rules: [sysctl_kernel_randomize_va_space]}
+  - {cis: "1.5.3", title: "Disable Core Dumps for All Users", role: cis_initial_setup, rules: [disable_users_coredumps, sysctl_fs_suid_dumpable]}
+  - {cis: "1.6.2", title: "Ensure Local Login Warning Banner Is Configured Properly", role: cis_initial_setup, rules: [banner_etc_issue_cis]}
+  - {cis: "1.6.3", title: "Ensure Remote Login Warning Banner Is Configured Properly", role: cis_initial_setup, rules: [banner_etc_issue_net_cis]}
+  - {cis: "2.1.13", title: "Uninstall rsync Package", role: cis_services, rules: [package_rsync_removed, service_rsyncd_disabled]}
+  - {cis: "2.1.18", title: "Uninstall apache2 Package", role: cis_services, rules: [package_httpd_removed, service_httpd_disabled, package_nginx_removed, service_nginx_disabled]}
+  - {cis: "2.2.4", title: "Remove telnet Clients", role: cis_services, rules: [package_inetutils-telnet_removed, package_telnet_removed]}
+  - {cis: "2.2.6", title: "Remove ftp Package", role: cis_services, rules: [package_ftp_removed, package_tnftp_removed]}
+  - {cis: "2.3.1.1", title: "Install the systemd_timesyncd Service", role: cis_services, rules: [package_timesyncd_installed, service_chronyd_disabled]}
+  - {cis: "2.4.1.2", title: "Verify Permissions on crontab", role: cis_services, rules: [file_permissions_crontab]}
+  - {cis: "2.4.1.3", title: "Verify Permissions on cron.hourly", role: cis_services, rules: [file_permissions_cron_hourly]}
+  - {cis: "2.4.1.4", title: "Verify Permissions on cron.daily", role: cis_services, rules: [file_permissions_cron_daily]}
+  - {cis: "2.4.1.5", title: "Verify Permissions on cron.weekly", role: cis_services, rules: [file_permissions_cron_weekly]}
+  - {cis: "2.4.1.6", title: "Verify Permissions on cron.monthly", role: cis_services, rules: [file_permissions_cron_monthly]}
+  - {cis: "2.4.1.7", title: "Verify Permissions on cron.d", role: cis_services, rules: [file_permissions_cron_d]}
+  - {cis: "2.4.1.8", title: "Ensure that /etc/cron.allow exists", role: cis_services, rules: [file_cron_allow_exists]}
+  - {cis: "2.4.2.1", title: "Ensure that /etc/at.allow exists", role: cis_services, rules: [file_at_allow_exists]}
+  - {cis: "3.3.1", title: "Disable Kernel Parameter for IPv6 Forwarding", role: cis_network, rules: [sysctl_net_ipv6_conf_all_forwarding, sysctl_net_ipv4_ip_forward]}
+  - {cis: "3.3.2", title: "Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces", role: cis_network, rules: [sysctl_net_ipv4_conf_all_send_redirects, sysctl_net_ipv4_conf_default_send_redirects]}
+  - {cis: "3.3.5", title: "Disable Accepting ICMP Redirects for All IPv6 Interfaces", role: cis_network, rules: [sysctl_net_ipv6_conf_all_accept_redirects, sysctl_net_ipv6_conf_default_accept_redirects, sysctl_net_ipv4_conf_default_accept_redirects]}
+  - {cis: "3.3.6", title: "Disable Kernel Parameter for Accepting Secure ICMP Redirects on all IPv4 Interfaces", role: cis_network, rules: [sysctl_net_ipv4_conf_all_secure_redirects, sysctl_net_ipv4_conf_default_secure_redirects]}
+  - {cis: "3.3.7", title: "Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces", role: cis_network, rules: [sysctl_net_ipv4_conf_all_rp_filter, sysctl_net_ipv4_conf_default_rp_filter]}
+  - {cis: "3.3.8", title: "Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces", role: cis_network, rules: [sysctl_net_ipv6_conf_all_accept_source_route, sysctl_net_ipv6_conf_default_accept_source_route, sysctl_net_ipv4_conf_all_accept_source_route, sysctl_net_ipv4_conf_default_accept_source_route]}
+  - {cis: "3.3.9", title: "Enable Kernel Parameter to Log Martian Packets on all IPv4 Interfaces", role: cis_network, rules: [sysctl_net_ipv4_conf_all_log_martians, sysctl_net_ipv4_conf_default_log_martians]}
+  - {cis: "3.3.10", title: "Enable Kernel Parameter to Use TCP Syncookies on Network Interfaces", role: cis_network, rules: [sysctl_net_ipv4_tcp_syncookies]}
+  - {cis: "3.3.11", title: "Configure Accepting Router Advertisements on All IPv6 Interfaces", role: cis_network, rules: [sysctl_net_ipv6_conf_all_accept_ra, sysctl_net_ipv6_conf_default_accept_ra]}
+  - {cis: "4.2.3", title: "Verify ufw Active", role: cis_firewall, rules: [check_ufw_active]}
+  - {cis: "4.2.4", title: "Set UFW Loopback Traffic", role: cis_firewall, rules: [set_ufw_loopback_traffic]}
+  - {cis: "4.2.6", title: "Ensure ufw Firewall Rules Exist for All Open Ports", role: cis_firewall, rules: [ufw_rules_for_open_ports]}
+  - {cis: "4.2.7", title: "Ensure ufw Default Deny Firewall Policy", role: cis_firewall, rules: [set_ufw_default_rule]}
+  - {cis: "5.1.1", title: "Verify Permissions on SSH Server config file", role: cis_access, rules: [file_permissions_sshd_config, file_permissions_sshd_drop_in_config]}
+  - {cis: "5.1.4", title: "Limit Users' SSH Access", role: cis_access, rules: [sshd_limit_user_access]}
+  - {cis: "5.1.5", title: "Enable SSH Warning Banner", role: cis_access, rules: [sshd_enable_warning_banner_net]}
+  - {cis: "5.1.6", title: "Use Only Strong Ciphers", role: cis_access, rules: [sshd_use_strong_ciphers]}
+  - {cis: "5.1.7", title: "Set SSH Client Alive Count Max", role: cis_access, rules: [sshd_set_keepalive, sshd_set_idle_timeout]}
+  - {cis: "5.1.10", title: "Disable Host-Based Authentication", role: cis_access, rules: [disable_host_auth]}
+  - {cis: "5.1.11", title: "Disable SSH Support for .rhosts Files", role: cis_access, rules: [sshd_disable_rhosts]}
+  - {cis: "5.1.12", title: "Use Only Strong Key Exchange algorithms", role: cis_access, rules: [sshd_use_strong_kex]}
+  - {cis: "5.1.13", title: "Ensure SSH LoginGraceTime is configured", role: cis_access, rules: [sshd_set_login_grace_time]}
+  - {cis: "5.1.14", title: "Set LogLevel to INFO", role: cis_access, rules: [sshd_set_loglevel_info]}
+  - {cis: "5.1.15", title: "Use Only Strong MACs", role: cis_access, rules: [sshd_use_strong_macs]}
+  - {cis: "5.1.16", title: "Set SSH authentication attempt limit", role: cis_access, rules: [sshd_set_max_auth_tries]}
+  - {cis: "5.1.17", title: "Set SSH MaxSessions limit", role: cis_access, rules: [sshd_set_max_sessions]}
+  - {cis: "5.1.18", title: "Ensure SSH MaxStartups is configured", role: cis_access, rules: [sshd_set_maxstartups]}
+  - {cis: "5.1.19", title: "Disable SSH Access via Empty Passwords", role: cis_access, rules: [sshd_disable_empty_passwords]}
+  - {cis: "5.1.20", title: "Disable SSH Root Login", role: cis_access, rules: [sshd_disable_root_login]}
+  - {cis: "5.1.21", title: "Do Not Allow SSH Environment Options", role: cis_access, rules: [sshd_do_not_permit_user_env]}
+  - {cis: "5.2.3", title: "Ensure Sudo Logfile Exists - sudo logfile", role: cis_access, rules: [sudo_custom_logfile]}
+  - {cis: "5.2.6", title: "Require Re-Authentication When Using the sudo Command", role: cis_access, rules: [sudo_require_reauthentication]}
+  - {cis: "5.2.7", title: "Ensure the Group Used by pam_wheel.so Module Exists on System and is Empty", role: cis_access, rules: [ensure_pam_wheel_group_empty, use_pam_wheel_group_for_su]}
+  - {cis: "5.3.1.3", title: "Install pam_pwquality Package", role: cis_access, rules: [package_pam_pwquality_installed]}
+  - {cis: "5.3.2.2", title: "Ensure pam_faillock module is enabled", role: cis_access, rules: [accounts_passwords_pam_faillock_enabled]}
+  - {cis: "5.3.2.3", title: "Verify pam_pwquality module is activated", role: cis_access, rules: [accounts_password_pam_pwquality_enabled]}
+  - {cis: "5.3.2.4", title: "Verify pam_pwhistory module is activated", role: cis_access, rules: [accounts_password_pam_pwhistory_enabled]}
+  - {cis: "5.3.3.1.1", title: "Lock Accounts After Failed Password Attempts", role: cis_access, rules: [accounts_passwords_pam_faillock_deny]}
+  - {cis: "5.3.3.1.2", title: "Set Lockout Time for Failed Password Attempts", role: cis_access, rules: [accounts_passwords_pam_faillock_unlock_time]}
+  - {cis: "5.3.3.3.1", title: "Limit Password Reuse", role: cis_access, rules: [accounts_password_pam_pwhistory_remember]}
+  - {cis: "5.3.3.3.2", title: "Limit Password Reuse", role: cis_access, rules: [accounts_password_pam_pwhistory_enforce_root]}
+  - {cis: "5.3.3.3.3", title: "Enforce Password History with use_authtok", role: cis_access, rules: [accounts_password_pam_pwhistory_use_authtok]}
+  - {cis: "5.3.3.4.1", title: "Prevent Login to Accounts With Empty Password", role: cis_access, rules: [no_empty_passwords_unix]}
+  - {cis: "5.4.1.1", title: "Set Password Maximum Age", role: cis_access, rules: [accounts_maximum_age_login_defs, accounts_password_set_max_life_existing]}
+  - {cis: "5.4.1.5", title: "Set Account Expiration Following Inactivity", role: cis_access, rules: [account_disable_post_pw_expiration]}
+  - {cis: "5.4.2.5", title: "Ensure that Root's Path Does Not Include World or Group-Writable Directories", role: cis_access, rules: [accounts_root_path_dirs_no_write, root_path_all_dirs]}
+  - {cis: "5.4.2.7", title: "Ensure that System Accounts Do Not Run a Shell Upon Login", role: cis_access, rules: [no_shelllogin_for_systemaccounts]}
+  - {cis: "5.4.3.2", title: "Set Interactive Session Timeout", role: cis_access, rules: [accounts_tmout]}
+  - {cis: "5.4.3.3", title: "Ensure the Default Bash Umask is Set Correctly", role: cis_access, rules: [accounts_umask_etc_bashrc, accounts_umask_etc_login_defs, accounts_umask_etc_profile]}
+  - {cis: "6.1.3.3", title: "Ensure journald is configured to send logs to rsyslog", role: cis_logging, rules: [journald_forward_to_syslog]}
+  - {cis: "6.1.4.1", title: "Verify permissions of log files", role: cis_logging, rules: [permissions_local_var_log, file_ownerships_var_log]}
+  - {cis: "6.3.1", title: "Install AIDE", role: cis_logging, rules: [package_aide_installed, aide_build_database]}
+  - {cis: "7.1.11", title: "Ensure No World-Writable Files Exist", role: cis_maintenance, rules: [file_permissions_unauthorized_world_writable]}
+  - {cis: "7.1.12", title: "Ensure All Files Are Owned by a User", role: cis_maintenance, rules: [no_files_unowned_by_user]}
+  - {cis: "7.2.10", title: "Ensure All User Initialization Files Have Mode 0740 Or Less Permissive", role: cis_maintenance, rules: [file_permission_user_init_files]}

@@ -1,0 +1,25 @@
+# Tunables and documented exceptions. Every task checks `cis_exception_ids` before acting; cisreport excludes the
+# exception rules from the "excluding exceptions" score and lists them with their reason.
+cis_exceptions:
+  - cis: "1.1.2.1.1"
+    rules: [partition_for_tmp]
+    reason: "a booted CI runner cannot be repartitioned; /tmp stays on the root filesystem"
+    owner_role: platform team
+  - cis: "4.3"
+    rules: [set_nftables_table, set_nftables_base_chain, set_nftables_loopback_traffic, service_nftables_enabled,
+            nftables_rules_permanent, package_ufw_removed]
+    reason: >-
+      CIS 4.1.1 asks for a single firewall utility and this lab uses ufw (4.2); the profile also checks the nftables
+      variant (4.3), whose rules cannot pass while ufw manages the firewall
+    owner_role: platform team
+
+cis_exception_ids: "{{ cis_exceptions | map(attribute='cis') | list }}"
+
+cis_banner_text: "Authorized users only. All activity may be monitored and reported."
+cis_ssh_allow_groups: [sudo, runner]
+cis_firewall_allow_out: ["53/udp", "53/tcp", "80/tcp", "443/tcp", "123/udp"]
+cis_pass_max_days: 365
+cis_pass_min_days: 1
+cis_pass_warn_age: 7
+cis_inactive_days: 45
+cis_shell_timeout: 900
