@@ -1,0 +1,84 @@
+- name: 7.1.x | permissions on account files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: root
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - {path: /etc/passwd, group: root, mode: "0644"}
+    - {path: /etc/group, group: root, mode: "0644"}
+    - {path: /etc/shadow, group: shadow, mode: "0640"}
+    - {path: /etc/gshadow, group: shadow, mode: "0640"}
+    - {path: /etc/shells, group: root, mode: "0644"}
+  when: "'7.1' not in cis_exception_ids"
+  tags: [cis_7_1, cis_maintenance]
+
+- name: 7.1.11 | world-writable files on local filesystems (find)
+  ansible.builtin.command: find / -xdev -type f -perm -0002 -not -path "/proc/*" -not -path "/sys/*"
+  register: cis_ww_files
+  changed_when: false
+  when: "'7.1.11' not in cis_exception_ids"
+  tags: [cis_7_1_11, cis_maintenance, molecule-notest]
+
+- name: 7.1.11 | world-writable files lose the write bit for others
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "o-w"
+  loop: "{{ cis_ww_files.stdout_lines | default([]) }}"
+  when: "'7.1.11' not in cis_exception_ids"
+  tags: [cis_7_1_11, cis_maintenance, molecule-notest]
+
+- name: 7.1.11 | world-writable directories without the sticky bit (find)
+  ansible.builtin.command: find / -xdev -type d -perm -0002 ! -perm -1000
+  register: cis_ww_dirs
+  changed_when: false
+  when: "'7.1.11' not in cis_exception_ids"
+  tags: [cis_7_1_11, cis_maintenance, molecule-notest]
+
+- name: 7.1.11 | world-writable directories get the sticky bit
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "o+t"
+  loop: "{{ cis_ww_dirs.stdout_lines | default([]) }}"
+  when: "'7.1.11' not in cis_exception_ids"
+  tags: [cis_7_1_11, cis_maintenance, molecule-notest]
+
+- name: 7.1.12 | files without an owner or group on local filesystems (find)
+  ansible.builtin.command: find / -xdev ( -nouser -o -nogroup ) -not -path "/proc/*"
+  register: cis_unowned
+  changed_when: false
+  when: "'7.1.12' not in cis_exception_ids"
+  tags: [cis_7_1_12, cis_maintenance, molecule-notest]
+
+- name: 7.1.12 | unowned files are given to root
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    follow: false
+  loop: "{{ cis_unowned.stdout_lines | default([]) }}"
+  when: "'7.1.12' not in cis_exception_ids"
+  tags: [cis_7_1_12, cis_maintenance, molecule-notest]
+
+- name: 7.2.10 | user dot files writable by group or others (find)
+  ansible.builtin.command: find /root /home -maxdepth 2 -name ".*" -type f -perm /go+w
+  register: cis_dotfiles
+  changed_when: false
+  when: "'7.2.10' not in cis_exception_ids"
+  tags: [cis_7_2_10, cis_maintenance]
+
+- name: 7.2.10 | user dot files are not writable by group or others
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "go-w"
+  loop: "{{ cis_dotfiles.stdout_lines | default([]) }}"
+  when: "'7.2.10' not in cis_exception_ids"
+  tags: [cis_7_2_10, cis_maintenance]
+
+- name: 7.2.x | no account has an empty password field (check)
+  ansible.builtin.command:
+    argv: [awk, "-F:", '($2 == "") {print $1}', /etc/shadow]
+  register: cis_empty_pw
+  changed_when: false
+  failed_when: cis_empty_pw.stdout | length > 0
+  tags: [cis_7_2, cis_maintenance]

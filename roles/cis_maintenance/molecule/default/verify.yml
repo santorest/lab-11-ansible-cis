@@ -1,0 +1,14 @@
+- name: Verify cis_maintenance
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Read /etc/shadow permissions
+      ansible.builtin.stat:
+        path: /etc/shadow
+      register: cis_shadow
+    - name: /etc/shadow is 0640 root:shadow
+      ansible.builtin.assert:
+        that:
+          - cis_shadow.stat.mode == '0640'
+          - cis_shadow.stat.gr_name == 'shadow'

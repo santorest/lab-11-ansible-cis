@@ -1,0 +1,9 @@
+galaxy_info:
+  author: santorest
+  description: CIS Ubuntu 24.04 Level 1 - Server, section 6 - logging and auditing
+  license: MIT
+  min_ansible_version: "2.17"
+  platforms:
+    - name: Ubuntu
+      versions: [noble]
+dependencies: []
