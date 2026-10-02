@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arf:asset-report-collection xmlns:arf="http://scap.nist.gov/schema/asset-reporting-format/1.1">
+  <arf:report-requests><arf:report-request id="collection1"><arf:content>
+    <ds:data-stream-collection xmlns:ds="http://scap.nist.gov/schema/scap/source/1.2">
+      <ds:component id="xccdf">
+        <Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2" id="xccdf_org.ssgproject.content_benchmark_UBUNTU2404">
+          <Rule id="xccdf_org.ssgproject.content_rule_sshd_disable_root_login" severity="medium"><title>Disable SSH Root Login</title></Rule>
+          <Rule id="xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_ip_forward" severity="medium"><title>Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces</title></Rule>
+          <Rule id="xccdf_org.ssgproject.content_rule_partition_for_tmp" severity="low"><title>Ensure /tmp Located On Separate Partition</title></Rule>
+          <Rule id="xccdf_org.ssgproject.content_rule_banner_etc_issue" severity="medium"><title>Modify the System Login Banner &lt;script&gt; | pipe</title></Rule>
+          <Rule id="xccdf_org.ssgproject.content_rule_package_telnet_removed" severity="low"><title>Uninstall telnet</title></Rule>
+          <Rule id="xccdf_org.ssgproject.content_rule_not_in_profile" severity="low"><title>Not selected</title></Rule>
+        </Benchmark>
+      </ds:component>
+    </ds:data-stream-collection>
+  </arf:content></arf:report-request></arf:report-requests>
+  <arf:reports><arf:report id="xccdf1"><arf:content>
+    <TestResult xmlns="http://checklists.nist.gov/xccdf/1.2" id="xccdf_org.open-scap_testresult_cis">
+      <profile idref="xccdf_org.ssgproject.content_profile_cis_level1_server"/>
+      <rule-result idref="xccdf_org.ssgproject.content_rule_sshd_disable_root_login"><result>pass</result></rule-result>
+      <rule-result idref="xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_ip_forward"><result>pass</result></rule-result>
+      <rule-result idref="xccdf_org.ssgproject.content_rule_partition_for_tmp"><result>fail</result></rule-result>
+      <rule-result idref="xccdf_org.ssgproject.content_rule_banner_etc_issue"><result>fail</result></rule-result>
+      <rule-result idref="xccdf_org.ssgproject.content_rule_package_telnet_removed"><result>notapplicable</result></rule-result>
+      <rule-result idref="xccdf_org.ssgproject.content_rule_not_in_profile"><result>notselected</result></rule-result>
+    </TestResult>
+  </arf:content></arf:report></arf:reports>
+</arf:asset-report-collection>
