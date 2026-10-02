@@ -41,7 +41,8 @@ sudo ufw --force enable
 sudo ufw status verbose
 sudo sysctl -w net.ipv4.ip_forward=0
 printf 'Defaults use_pty\nDefaults logfile="/var/log/sudo.log"\n' | sudo tee /etc/sudoers.d/99-spike
-sudo visudo -c
+sudo chmod 0440 /etc/sudoers.d/99-spike
+sudo visudo -cf /etc/sudoers.d/99-spike
 sudo systemctl reload ssh || sudo systemctl reload sshd || echo "no ssh service"
 curl -fsS -o /dev/null -w "github api %{http_code}\n" https://api.github.com
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq aide aide-common

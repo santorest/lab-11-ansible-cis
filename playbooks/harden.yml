@@ -1,0 +1,11 @@
+- name: Harden Ubuntu 24.04 to CIS Level 1 - Server
+  hosts: all
+  become: true
+  roles:
+    - cis_initial_setup
+    - cis_services
+    - cis_network
+    - cis_firewall
+    - cis_access
+    - cis_logging
+    - cis_maintenance
