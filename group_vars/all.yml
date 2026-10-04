@@ -12,6 +12,12 @@ cis_exceptions:
       CIS 4.1.1 asks for a single firewall utility and this lab uses ufw (4.2); the profile also checks the nftables
       variant (4.3), whose rules cannot pass while ufw manages the firewall
     owner_role: platform team
+  - cis: "6.3.1"
+    rules: [package_aide_installed, aide_build_database]
+    reason: >-
+      building the AIDE database of a GitHub runner (a large, short-lived toolchain image) did not finish in 15
+      minutes (spike run 37055526938); file integrity monitoring belongs on long-lived servers
+    owner_role: platform team
 
 cis_exception_ids: "{{ cis_exceptions | map(attribute='cis') | list }}"
 

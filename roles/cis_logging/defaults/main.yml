@@ -1,2 +1,2 @@
-cis_aide_enabled: true
+cis_aide_enabled: false   # see the 6.3.1 exception in group_vars/all.yml
 cis_exception_ids: []

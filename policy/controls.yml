@@ -83,7 +83,6 @@ controls:
   - {cis: "5.4.3.3", title: "Ensure the Default Bash Umask is Set Correctly", role: cis_access, rules: [accounts_umask_etc_bashrc, accounts_umask_etc_login_defs, accounts_umask_etc_profile]}
   - {cis: "6.1.3.3", title: "Ensure journald is configured to send logs to rsyslog", role: cis_logging, rules: [journald_forward_to_syslog]}
   - {cis: "6.1.4.1", title: "Verify permissions of log files", role: cis_logging, rules: [permissions_local_var_log, file_ownerships_var_log]}
-  - {cis: "6.3.1", title: "Install AIDE", role: cis_logging, rules: [package_aide_installed, aide_build_database]}
   - {cis: "7.1.11", title: "Ensure No World-Writable Files Exist", role: cis_maintenance, rules: [file_permissions_unauthorized_world_writable]}
   - {cis: "7.1.12", title: "Ensure All Files Are Owned by a User", role: cis_maintenance, rules: [no_files_unowned_by_user]}
   - {cis: "7.2.10", title: "Ensure All User Initialization Files Have Mode 0740 Or Less Permissive", role: cis_maintenance, rules: [file_permission_user_init_files]}
