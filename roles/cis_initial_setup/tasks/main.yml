@@ -61,9 +61,23 @@
   when: "'1.3.1.3' not in (cis_exception_ids | default([]))"
   tags: [cis_1_3_1_3, cis_initial_setup, molecule-notest]
 
-- name: 1.3.1.3 | AppArmor profiles flagged unconfined are put in complain mode
-  ansible.builtin.command: aa-complain {{ item }}
+# The flag is edited in place: aa-complain parses every profile in /etc/apparmor.d and refuses
+# to run when two profiles claim the same binary (the runner image ships two for msedge).
+- name: 1.3.1.3 | AppArmor profiles flagged unconfined are set to complain mode
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^(\s*profile\s.*flags=\(.*)\bunconfined\b(.*\).*)$'
+    replace: '\1complain\2'
   loop: "{{ cis_initial_setup_unconfined.stdout_lines | default([]) }}"
+  register: cis_initial_setup_complained
+  when: "'1.3.1.3' not in (cis_exception_ids | default([]))"
+  tags: [cis_1_3_1_3, cis_initial_setup, molecule-notest]
+
+- name: 1.3.1.3 | changed AppArmor profiles are reloaded
+  ansible.builtin.command: apparmor_parser -r {{ item.item }}
+  loop: "{{ cis_initial_setup_complained.results | default([]) | selectattr('changed') | list }}"
+  loop_control:
+    label: "{{ item.item }}"
   changed_when: true
   when: "'1.3.1.3' not in (cis_exception_ids | default([]))"
   tags: [cis_1_3_1_3, cis_initial_setup, molecule-notest]
