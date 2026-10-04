@@ -6,9 +6,9 @@
     - name: Read /etc/modprobe.d/cis-sctp.conf
       ansible.builtin.slurp:
         src: /etc/modprobe.d/cis-sctp.conf
-      register: cis_check_0
+      register: cis_network_check_0
     - name: /etc/modprobe.d/cis-sctp.conf contains the expected setting
       ansible.builtin.assert:
         that:
           - >-
-            'install sctp /bin/false' in (cis_check_0.content | b64decode)
+            'install sctp /bin/false' in (cis_network_check_0.content | b64decode)

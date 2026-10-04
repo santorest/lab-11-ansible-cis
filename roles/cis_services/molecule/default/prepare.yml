@@ -1,0 +1,9 @@
+- name: Prepare a server-like container
+  hosts: all
+  become: true
+  tasks:
+    - name: Packages a server has and the roles configure
+      ansible.builtin.apt:
+        name: [openssh-server, kmod, rsyslog, cron, procps]
+        state: present
+        update_cache: true

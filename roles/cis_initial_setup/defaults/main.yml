@@ -1,5 +1,4 @@
-cis_disabled_fs_modules: [cramfs, freevxfs, hfs, hfsplus, jffs2, usb-storage]
-cis_grub_cmdline: "apparmor=1 security=apparmor"
-cis_grub_superuser: grubadmin
-cis_banner_text: "Authorized users only. All activity may be monitored and reported."
-cis_exception_ids: []
+cis_initial_setup_fs_modules: [cramfs, freevxfs, hfs, hfsplus, jffs2, usb-storage]
+cis_initial_setup_grub_cmdline: "apparmor=1 security=apparmor"
+cis_initial_setup_grub_superuser: grubadmin
+cis_initial_setup_banner_text: "Authorized users only. All activity may be monitored and reported."

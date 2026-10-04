@@ -1,6 +1,5 @@
 # Only what the profile flagged on the default runner (rsync 2.1.13, apache2/nginx 2.1.18, telnet 2.2.4, ftp 2.2.6),
 # plus other listed servers/clients that are not installed (removal is then a no-op).
-cis_unneeded_server_packages: [rsync, apache2, nginx, avahi-daemon, isc-dhcp-server, bind9, dnsmasq, vsftpd, slapd, nfs-kernel-server,
+cis_services_server_packages: [rsync, apache2, nginx, avahi-daemon, isc-dhcp-server, bind9, dnsmasq, vsftpd, slapd, nfs-kernel-server,
                                ypserv, cups, samba, snmpd, tftpd-hpa, squid, xinetd]
-cis_unneeded_client_packages: [telnet, inetutils-telnet, ftp, tnftp, nis, rsh-client, talk, ldap-utils]
-cis_exception_ids: []
+cis_services_client_packages: [telnet, inetutils-telnet, ftp, tnftp, nis, rsh-client, talk, ldap-utils]

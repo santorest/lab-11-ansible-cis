@@ -21,11 +21,11 @@ cis_exceptions:
 
 cis_exception_ids: "{{ cis_exceptions | map(attribute='cis') | list }}"
 
-cis_banner_text: "Authorized users only. All activity may be monitored and reported."
-cis_ssh_allow_groups: [sudo, runner]
+cis_initial_setup_banner_text: "Authorized users only. All activity may be monitored and reported."
+cis_access_ssh_allow_groups: [sudo, runner]
 cis_firewall_allow_out: ["53/udp", "53/tcp", "80/tcp", "443/tcp", "123/udp"]
-cis_pass_max_days: 365
-cis_pass_min_days: 1
-cis_pass_warn_age: 7
-cis_inactive_days: 45
-cis_shell_timeout: 900
+cis_access_pass_max_days: 365
+cis_access_pass_min_days: 1
+cis_access_pass_warn_age: 7
+cis_access_inactive_days: 45
+cis_access_shell_timeout: 900

@@ -59,6 +59,9 @@ jobs:
       - run: pip install -r requirements-ansible.txt
       - run: ansible-galaxy collection install -r requirements.yml
       - name: molecule test (${{ matrix.role }})
+        # molecule runs from the role directory, where the repository ansible.cfg (and its collections_path) is not read
+        env:
+          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/.ansible/collections
         run: cd roles/${{ matrix.role }} && molecule test
 
   molecule:

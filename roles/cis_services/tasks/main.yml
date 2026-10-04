@@ -1,17 +1,17 @@
 - name: 2.1.x | Server services that are not needed are removed
   ansible.builtin.apt:
-    name: "{{ cis_unneeded_server_packages }}"
+    name: "{{ cis_services_server_packages }}"
     state: absent
     purge: true
-  when: "'2.1' not in cis_exception_ids"
+  when: "'2.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_1, cis_services]
 
 - name: 2.2.x | Insecure clients are removed
   ansible.builtin.apt:
-    name: "{{ cis_unneeded_client_packages }}"
+    name: "{{ cis_services_client_packages }}"
     state: absent
     purge: true
-  when: "'2.2' not in cis_exception_ids"
+  when: "'2.2' not in (cis_exception_ids | default([]))"
   tags: [cis_2_2, cis_services]
 
 - name: 2.3.1.1 | A single time synchronization daemon - systemd-timesyncd, chrony removed
@@ -19,14 +19,14 @@
     name: chrony
     state: absent
     purge: true
-  when: "'2.3.1.1' not in cis_exception_ids"
+  when: "'2.3.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_3_1_1, cis_services]
 
 - name: 2.3.1.1 | systemd-timesyncd is installed
   ansible.builtin.apt:
     name: systemd-timesyncd
     state: present
-  when: "'2.3.1.1' not in cis_exception_ids"
+  when: "'2.3.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_3_1_1, cis_services]
 
 - name: 2.3.2.x | systemd-timesyncd is enabled and running
@@ -34,7 +34,7 @@
     name: systemd-timesyncd
     enabled: true
     state: started
-  when: "'2.3.2' not in cis_exception_ids"
+  when: "'2.3.2' not in (cis_exception_ids | default([]))"
   tags: [cis_2_3_2, cis_services, molecule-notest]
 
 - name: 2.4.1.x | cron files and directories are root-only
@@ -50,7 +50,7 @@
     - {path: /etc/cron.weekly, mode: "0700"}
     - {path: /etc/cron.monthly, mode: "0700"}
     - {path: /etc/cron.d, mode: "0700"}
-  when: "'2.4.1' not in cis_exception_ids"
+  when: "'2.4.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_4_1, cis_services]
 
 - name: 2.4.1.8 / 2.4.2.1 | cron and at are restricted to authorized users
@@ -61,5 +61,5 @@
     group: root
     mode: "0640"
   loop: [/etc/cron.allow, /etc/at.allow]
-  when: "'2.4.1.8' not in cis_exception_ids"
+  when: "'2.4.1.8' not in (cis_exception_ids | default([]))"
   tags: [cis_2_4_1_8, cis_services]

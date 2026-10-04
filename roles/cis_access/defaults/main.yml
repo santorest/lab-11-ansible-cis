@@ -1,4 +1,4 @@
-cis_sshd:
+cis_access_sshd:
   Banner: /etc/issue.net
   Ciphers: "aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
   ClientAliveInterval: "15"
@@ -19,12 +19,11 @@ cis_sshd:
   PermitRootLogin: "no"
   PermitUserEnvironment: "no"
   UsePAM: "yes"
-cis_ssh_allow_groups: [sudo]
-cis_su_group: sugroup
-cis_sudo_secure_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-cis_pass_max_days: 365
-cis_pass_min_days: 1
-cis_pass_warn_age: 7
-cis_inactive_days: 45
-cis_shell_timeout: 900
-cis_exception_ids: []
+cis_access_ssh_allow_groups: [sudo]
+cis_access_su_group: sugroup
+cis_access_sudo_secure_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+cis_access_pass_max_days: 365
+cis_access_pass_min_days: 1
+cis_access_pass_warn_age: 7
+cis_access_inactive_days: 45
+cis_access_shell_timeout: 900

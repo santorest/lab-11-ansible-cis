@@ -22,4 +22,3 @@ cis_network_sysctl:
   net.ipv4.tcp_syncookies: "1"
   net.ipv6.conf.all.accept_ra: "0"
   net.ipv6.conf.default.accept_ra: "0"
-cis_exception_ids: []

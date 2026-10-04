@@ -1,3 +1,13 @@
+- name: Directories this role writes into exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop: ["/etc/ssh/sshd_config.d", "/etc/security/pwquality.conf.d"]
+  tags: [cis_access]
+
 - name: 5.1.x | sshd settings in a drop-in that sshd reads first (first value wins)
   ansible.builtin.template:
     src: 00-cis.conf.j2
@@ -7,15 +17,15 @@
     mode: "0600"
     validate: /usr/sbin/sshd -t -f %s
   notify: Reload sshd
-  when: "'5.1' not in cis_exception_ids"
+  when: "'5.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_1, cis_access]
 
 - name: 5.1.1 | sshd configuration files are root-only (find drop-ins)
   ansible.builtin.find:
     paths: /etc/ssh/sshd_config.d
     patterns: "*.conf"
-  register: cis_sshd_dropins
-  when: "'5.1.1' not in cis_exception_ids"
+  register: cis_access_sshd_dropins
+  when: "'5.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_1_1, cis_access]
 
 - name: 5.1.1 | sshd configuration files are root-only
@@ -24,8 +34,8 @@
     owner: root
     group: root
     mode: "0600"
-  loop: "{{ ['/etc/ssh/sshd_config'] + (cis_sshd_dropins.files | default([]) | map(attribute='path') | list) }}"
-  when: "'5.1.1' not in cis_exception_ids"
+  loop: "{{ ['/etc/ssh/sshd_config'] + (cis_access_sshd_dropins.files | default([]) | map(attribute='path') | list) }}"
+  when: "'5.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_1_1, cis_access]
 
 - name: 5.2.x | sudo uses a pty, logs to a file, re-authenticates after 15 minutes, uses a clean PATH
@@ -36,30 +46,30 @@
     group: root
     mode: "0440"
     validate: /usr/sbin/visudo -cf %s
-  when: "'5.2' not in cis_exception_ids"
+  when: "'5.2' not in (cis_exception_ids | default([]))"
   tags: [cis_5_2, cis_access]
 
 - name: 5.2.7 | the group allowed to use su exists and is empty
   ansible.builtin.group:
-    name: "{{ cis_su_group }}"
+    name: "{{ cis_access_su_group }}"
     state: present
-  when: "'5.2.7' not in cis_exception_ids"
+  when: "'5.2.7' not in (cis_exception_ids | default([]))"
   tags: [cis_5_2_7, cis_access]
 
 - name: 5.2.7 | su is restricted to that group
   ansible.builtin.lineinfile:
     path: /etc/pam.d/su
     regexp: '^\s*#?\s*auth\s+required\s+pam_wheel\.so'
-    line: "auth       required   pam_wheel.so use_uid group={{ cis_su_group }}"
+    line: "auth       required   pam_wheel.so use_uid group={{ cis_access_su_group }}"
     insertafter: '^auth\s+sufficient\s+pam_rootok\.so'
-  when: "'5.2.7' not in cis_exception_ids"
+  when: "'5.2.7' not in (cis_exception_ids | default([]))"
   tags: [cis_5_2_7, cis_access]
 
 - name: 5.3.1.3 | pam_pwquality is installed
   ansible.builtin.apt:
     name: libpam-pwquality
     state: present
-  when: "'5.3.1.3' not in cis_exception_ids"
+  when: "'5.3.1.3' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_1, cis_access]
 
 - name: 5.3.3.2.x | password quality settings
@@ -69,7 +79,7 @@
     owner: root
     group: root
     mode: "0644"
-  when: "'5.3.3.2' not in cis_exception_ids"
+  when: "'5.3.3.2' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_3_2, cis_access]
 
 - name: 5.3.3.1.x | account lockout settings (faillock)
@@ -79,7 +89,7 @@
     owner: root
     group: root
     mode: "0644"
-  when: "'5.3.3.1' not in cis_exception_ids"
+  when: "'5.3.3.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_3_1, cis_access]
 
 - name: 5.3.2.x | PAM profiles for faillock and password history
@@ -91,7 +101,7 @@
     mode: "0644"
   loop: [cis-faillock, cis-faillock-notify, cis-pwhistory]
   notify: Update PAM
-  when: "'5.3.2' not in cis_exception_ids"
+  when: "'5.3.2' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_2, cis_access]
 
 - name: 5.3.3.4.1 | pam_unix does not accept empty passwords (nullok removed from its profile)
@@ -100,7 +110,7 @@
     regexp: '\s+nullok\b'
     replace: ""
   notify: Update PAM
-  when: "'5.3.3.4' not in cis_exception_ids"
+  when: "'5.3.3.4' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_3_4, cis_access]
 
 - name: 5.4.1.x | password ageing and umask defaults
@@ -109,38 +119,38 @@
     regexp: '^\s*#?\s*{{ item.key }}\s'
     line: "{{ item.key }}\t{{ item.value }}"
   loop:
-    - {key: PASS_MAX_DAYS, value: "{{ cis_pass_max_days }}"}
-    - {key: PASS_MIN_DAYS, value: "{{ cis_pass_min_days }}"}
-    - {key: PASS_WARN_AGE, value: "{{ cis_pass_warn_age }}"}
+    - {key: PASS_MAX_DAYS, value: "{{ cis_access_pass_max_days }}"}
+    - {key: PASS_MIN_DAYS, value: "{{ cis_access_pass_min_days }}"}
+    - {key: PASS_WARN_AGE, value: "{{ cis_access_pass_warn_age }}"}
     - {key: ENCRYPT_METHOD, value: YESCRYPT}
     - {key: UMASK, value: "027"}
-  when: "'5.4.1' not in cis_exception_ids"
+  when: "'5.4.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_1, cis_access]
 
 - name: 5.4.1.5 | inactive password lock for new accounts
   ansible.builtin.lineinfile:
     path: /etc/default/useradd
     regexp: '^\s*#?\s*INACTIVE='
-    line: "INACTIVE={{ cis_inactive_days }}"
-  when: "'5.4.1.5' not in cis_exception_ids"
+    line: "INACTIVE={{ cis_access_inactive_days }}"
+  when: "'5.4.1.5' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_1_5, cis_access]
 
 - name: 5.4.1.1 | accounts with a password (find those above the maximum age)
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      awk -F: '$2 !~ /^[!*]/ && $2 != "" && ($5 == "" || $5 > {{ cis_pass_max_days }}) {print $1}' /etc/shadow
+      awk -F: '$2 !~ /^[!*]/ && $2 != "" && ($5 == "" || $5 > {{ cis_access_pass_max_days }}) {print $1}' /etc/shadow
     executable: /bin/bash
-  register: cis_long_lived
+  register: cis_access_long_lived
   changed_when: false
-  when: "'5.4.1.1' not in cis_exception_ids"
+  when: "'5.4.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_1_1, cis_access]
 
 - name: 5.4.1.1 | existing passwords expire within the maximum age
-  ansible.builtin.command: chage --maxdays {{ cis_pass_max_days }} {{ item }}
-  loop: "{{ cis_long_lived.stdout_lines | default([]) }}"
+  ansible.builtin.command: chage --maxdays {{ cis_access_pass_max_days }} {{ item }}
+  loop: "{{ cis_access_long_lived.stdout_lines | default([]) }}"
   changed_when: true
-  when: "'5.4.1.1' not in cis_exception_ids"
+  when: "'5.4.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_1_1, cis_access]
 
 - name: 5.4.2.7 | system accounts with a login shell (find)
@@ -149,27 +159,27 @@
       set -o pipefail
       awk -F: '$3 < 1000 && $1 !~ /^(root|sync|shutdown|halt)$/ && $7 !~ /(nologin|false)$/ {print $1}' /etc/passwd
     executable: /bin/bash
-  register: cis_system_shells
+  register: cis_access_system_shells
   changed_when: false
-  when: "'5.4.2.7' not in cis_exception_ids"
+  when: "'5.4.2.7' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_2_7, cis_access]
 
 - name: 5.4.2.7 | system accounts cannot log in
   ansible.builtin.user:
     name: "{{ item }}"
     shell: /usr/sbin/nologin
-  loop: "{{ cis_system_shells.stdout_lines | default([]) }}"
-  when: "'5.4.2.7' not in cis_exception_ids"
+  loop: "{{ cis_access_system_shells.stdout_lines | default([]) }}"
+  when: "'5.4.2.7' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_2_7, cis_access]
 
 - name: 5.4.3.2 | interactive shells time out
   ansible.builtin.copy:
     dest: /etc/profile.d/60-cis-tmout.sh
-    content: "readonly TMOUT={{ cis_shell_timeout }}\nexport TMOUT\n"
+    content: "readonly TMOUT={{ cis_access_shell_timeout }}\nexport TMOUT\n"
     owner: root
     group: root
     mode: "0644"
-  when: "'5.4.3.2' not in cis_exception_ids"
+  when: "'5.4.3.2' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_3_2, cis_access]
 
 - name: 5.4.3.3 | the default umask is 027 for login and interactive shells
@@ -178,5 +188,5 @@
     regexp: '^\s*umask\s+\d+'
     line: "umask 027"
   loop: [/etc/profile, /etc/bash.bashrc]
-  when: "'5.4.3.3' not in cis_exception_ids"
+  when: "'5.4.3.3' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_3_3, cis_access]

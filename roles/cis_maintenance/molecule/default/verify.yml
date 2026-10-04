@@ -6,9 +6,9 @@
     - name: Read /etc/shadow permissions
       ansible.builtin.stat:
         path: /etc/shadow
-      register: cis_shadow
+      register: cis_maintenance_shadow
     - name: /etc/shadow is 0640 root:shadow
       ansible.builtin.assert:
         that:
-          - cis_shadow.stat.mode == '0640'
-          - cis_shadow.stat.gr_name == 'shadow'
+          - cis_maintenance_shadow.stat.mode == '0640'
+          - cis_maintenance_shadow.stat.gr_name == 'shadow'
