@@ -1,0 +1,13 @@
+flowchart TB
+  SSG["SCAP Security Guide v0.1.82<br/>download + SHA-512 check"] --> B["oscap scan (before)<br/>profile cis_level1_server"]
+  B --> H1["ansible-playbook harden.yml<br/>7 roles, localhost, become"]
+  H1 --> H2["ansible-playbook harden.yml again<br/>recap must show changed=0 failed=0"]
+  H2 --> A["oscap scan (after)"]
+  POL["policy/controls.yml (CIS id -> role -> rules)<br/>group_vars cis_exceptions (reason, owner role)<br/>policy/policy.yml (threshold 90 %)"] --> C
+  B --> C["cisreport compare<br/>scores, fixed, regressions, claimed failing"]
+  A --> C
+  H2 --> C
+  C --> R["report: HTML, Markdown, JSON<br/>job summary + artifacts"]
+  C --> G{"gate"}
+  G -->|"score below threshold, claimed rule failing,<br/>regression or second run changed"| F["CI fails"]
+  G -->|"all checks pass"| P["CI passes"]

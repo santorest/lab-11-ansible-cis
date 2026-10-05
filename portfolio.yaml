@@ -1,0 +1,31 @@
+# Metadata used by the portfolio site's `import_lab` command (site repo). Not needed to run the lab.
+slug: ansible-cis
+category: scripting-automation
+repo_url: https://github.com/santorest/lab-11-ansible-cis
+status: in_progress          # design | in_progress | complete
+difficulty: intermediate     # beginner | intermediate | advanced
+featured: true
+# The CI results are real; the host is a disposable CI runner.
+sample_output_notice: true
+cover: diagrams/architecture.png
+writeup:
+  en: WRITEUP.md
+  es: WRITEUP.es.md
+title:
+  en: "Ansible CIS Hardening for Ubuntu 24.04"
+  es: "Endurecimiento CIS con Ansible para Ubuntu 24.04"
+summary:
+  en: >-
+    Ansible roles harden Ubuntu 24.04 to CIS Level 1 – Server; OpenSCAP scans before and after, a second run proves
+    idempotency, and CI fails on a low score, a claimed control that still fails, a regression or a run that changes
+    something.
+  es: >-
+    Roles de Ansible endurecen Ubuntu 24.04 al nivel 1 de CIS para servidores; OpenSCAP escanea antes y después, una
+    segunda ejecución prueba la idempotencia y CI falla ante un puntaje bajo, un control declarado que sigue fallando,
+    una regresión o una ejecución que cambia algo.
+tools: [Ansible, OpenSCAP, SCAP Security Guide, CIS Benchmarks, Molecule, ansible-lint, Python, Ubuntu, GitHub Actions]
+mitre_attack: [T1021.004, T1548.003, T1562.001]
+bundle:
+  title:
+    en: Lab source bundle
+    es: Paquete de fuentes del laboratorio
