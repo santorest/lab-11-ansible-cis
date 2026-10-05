@@ -44,11 +44,14 @@
   when: "'1.3.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_1_3_1_1, cis_initial_setup]
 
+# Each parameter is added to the existing GRUB_CMDLINE_LINUX (console, NIC naming, encryption... stay as they are)
 - name: 1.3.1.2 | AppArmor is enabled in the bootloader configuration
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: '^GRUB_CMDLINE_LINUX="'
-    line: 'GRUB_CMDLINE_LINUX="{{ cis_initial_setup_grub_cmdline }}"'
+    backrefs: true
+    regexp: '^GRUB_CMDLINE_LINUX="((?![^"]*(?<!\S){{ item | regex_escape }}(?!\S))[^"]*?)\s*"$'
+    line: 'GRUB_CMDLINE_LINUX="\1 {{ item }}"'
+  loop: "{{ cis_initial_setup_grub_cmdline.split() }}"
   notify: Update grub
   when: "'1.3.1.2' not in (cis_exception_ids | default([]))"
   tags: [cis_1_3_1_2, cis_initial_setup, molecule-notest]
@@ -85,15 +88,22 @@
 - name: 1.4.1 | Bootloader superuser and password (hash generated once on this host)
   ansible.builtin.shell:
     cmd: |
-      set -o pipefail
-      pw=$(openssl rand -hex 24)
-      hash=$(printf '%s\n%s\n' "$pw" "$pw" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf2/ {print $NF}')
+      set -euo pipefail
+      hash="${CIS_GRUB_HASH:-}"
+      if [ -z "$hash" ]; then
+        pw=$(openssl rand -hex 24)
+        hash=$(printf '%s\n%s\n' "$pw" "$pw" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf2/ {print $NF}')
+      fi
+      case "$hash" in grub.pbkdf2.sha512.*) ;; *) echo "no valid grub.pbkdf2 hash" >&2; exit 1 ;; esac
       umask 077
       printf '#!/bin/sh\ncat <<EOF\nset superusers="%s"\npassword_pbkdf2 %s %s\nEOF\n' \
         "{{ cis_initial_setup_grub_superuser }}" "{{ cis_initial_setup_grub_superuser }}" "$hash" > /etc/grub.d/01_users
       chmod 0700 /etc/grub.d/01_users
     executable: /bin/bash
     creates: /etc/grub.d/01_users
+  environment:
+    CIS_GRUB_HASH: "{{ cis_initial_setup_grub_password_hash }}"
+  no_log: "{{ cis_initial_setup_grub_password_hash | length > 0 }}"
   notify: Update grub
   when: "'1.4.1' not in (cis_exception_ids | default([]))"
   tags: [cis_1_4_1, cis_initial_setup, molecule-notest]

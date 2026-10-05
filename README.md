@@ -38,7 +38,8 @@ runner's home directories; see [WRITEUP.md](WRITEUP.md#7-results)).
 2. **Scan before** with `oscap xccdf eval` and the profile `xccdf_org.ssgproject.content_profile_cis_level1_server`
    (ARF + HTML).
 3. **Harden**: `ansible-playbook playbooks/harden.yml` applies the seven roles to `localhost` with `become`, in CIS
-   section order. Every task is tagged with its CIS id and skipped when that id is a documented exception.
+   section order. Every task is tagged with its CIS id and is skipped when the CIS id it names (for example `5.1`)
+   is listed as a documented exception.
 4. **Harden again**: the second run must report `changed=0` and `failed=0` on every host.
 5. **Scan after** with the same content and profile.
 6. **Report and gate**: `cisreport` reads both scans, the second-run recap,
@@ -66,7 +67,9 @@ export ANSIBLE_COLLECTIONS_PATH="$PWD/.ansible/collections"
 cd roles/cis_access && molecule test
 ```
 
-Tasks that need a real kernel, bootloader or firewall are tagged `molecule-notest` and run only on the VM.
+Tasks that need a real kernel, bootloader, firewall, running services or a whole filesystem (sysctl, AppArmor,
+grub, ufw, timesyncd, the SSH pre-flight check, the filesystem-wide permission fixes, `/var/log`) are tagged
+`molecule-notest` and run only in the `harden` job on the runner VM.
 
 ## Roles
 
@@ -108,8 +111,9 @@ CI fails (exit 1) when:
 - a rule passed before and fails after (a regression), even if the overall score rose;
 - the second playbook run reports `changed > 0` or `failed > 0` on any host.
 
-A scan that did not really happen — missing or empty results, a profile that selected no rules, results that are all
-`error`/`notchecked` — or a missing recap is an error (exit 2), never a score.
+A scan that did not really happen — missing or empty results, a profile that selected no rules, no rule that passed
+or failed, or more than 5 % of the selected rules in `error`/`notchecked` — or a missing recap is an error (exit 2),
+never a score. A claimed rule that ends in `error` or `notchecked` counts as still failing.
 
 ## CI and tests
 
@@ -122,6 +126,25 @@ A scan that did not really happen — missing or empty results, a profile that s
 | `secrets` | gitleaks over the full history |
 
 The cycle also runs weekly and on demand.
+
+## Before using the roles on a real server
+
+The cycle targets disposable hosts. On a server that matters, read the defaults first; the roles protect against the
+usual ways hardening breaks a server, and some decisions stay with its owner:
+
+- **Services.** Server packages in `cis_services_server_packages` are removed (not purged). If one of their services
+  is running, the role stops unless `cis_services_remove_active_services: true`.
+- **SSH access.** Before writing the SSH settings, the role checks that the account it connects as
+  (`cis_access_admin_user`) is not root and is in `cis_access_ssh_allow_groups`.
+- **Bootloader password.** Provide `cis_initial_setup_grub_password_hash` (from `grub-mkpasswd-pbkdf2`, kept in
+  Ansible Vault). Without it, a random password is generated and not kept: normal boot works, but editing boot entries
+  needs rescue media. The AppArmor parameters are added to the existing kernel command line.
+- **Password ageing.** Accounts whose password is already older than the maximum age are listed, not changed (they
+  would expire at once).
+- **Ownership fixes** skip container storage (`/var/lib/docker`, `containerd`, `containers`); log files owned by
+  service accounts keep their owner.
+- **Firewall.** ufw denies outgoing traffic except the ports in `cis_firewall_allow_out` (DNS, HTTP, HTTPS, NTP by
+  default); add what the server needs (SMTP, LDAP, outbound SSH, database replication) before hardening.
 
 ## Limits
 

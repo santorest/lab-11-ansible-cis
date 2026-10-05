@@ -77,8 +77,9 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
 - **Compuerta** (código 1): el puntaje sin excepciones por debajo del 90 %, cualquier regla declarada que falle,
   cualquier regresión (aunque el puntaje total haya subido) o una segunda ejecución con `changed > 0` o `failed > 0`.
 - **Errores, no puntajes** (código 2): un escaneo ausente, vacío o truncado, un perfil que no seleccionó reglas,
-  resultados que son todos `error` o `notchecked`, o un resumen de Ansible ausente. Un escaneo que no ocurrió nunca
-  debe leerse como 100 % ni como 0 %.
+  ninguna regla que cumpla o falle, más del 5 % de las reglas seleccionadas en `error` o `notchecked`, o un resumen
+  de Ansible ausente. Un escaneo que no ocurrió nunca debe leerse como 100 % ni como 0 %. Una regla declarada que
+  termina en `error` o `notchecked` cuenta como que sigue fallando.
 
 ## 5. Roles
 
@@ -106,7 +107,7 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
 |---|---|
 | `lint` | yamllint, ansible-lint (perfil production), ruff, mypy (estricto), shellcheck |
 | `unit` | `cisreport` sobre datos de prueba: análisis, escaneos vacíos o que no coinciden, excepciones, regresiones, reglas declaradas que fallan, análisis del resumen de Ansible, límites del umbral, escape en el informe; cobertura mínima 90 % |
-| `molecule` | cada rol en un contenedor Ubuntu 24.04: converge, idempotencia, verificación (las tareas de kernel, cargador de arranque y firewall se etiquetan para ejecutarse solo en la VM) |
+| `molecule` | cada rol en un contenedor Ubuntu 24.04: converge, idempotencia, verificación (las tareas que necesitan un kernel, cargador de arranque, firewall, servicios en ejecución o un sistema de archivos completo se etiquetan para ejecutarse solo en la VM) |
 | `harden` | el ciclo completo en la VM del runner; artefactos: escaneos, informe, registros del playbook; un resumen en Markdown del trabajo |
 | `secrets` | gitleaks sobre todo el historial |
 
@@ -196,6 +197,9 @@ verificaciones del propio escáner en el archivo de resultados; las correcciones
 - El puntaje viene del perfil de ComplianceAsCode, que sigue a CIS pero no es CIS-CAT ni una certificación.
 - Los ajustes que requieren reiniciar (AppArmor en la línea de comandos del kernel, la contraseña del cargador de
   arranque) se escriben y el escáner los verifica, pero no se arranca con ellos.
+- En un servidor real, algunas decisiones son de su responsable (servicios que se conservan, puertos de salida, el
+  hash de la contraseña del cargador de arranque, cuentas con contraseñas antiguas); el README las enumera junto con
+  las protecciones que aplican los roles.
 - No cubre: nivel 2, Windows Server, CIS-CAT Pro, administración de flotas.
 
 ## 10. Reproducirlo

@@ -20,7 +20,7 @@
   ansible.builtin.shell:
     cmd: >-
       set -o pipefail;
-      find / -xdev -type f -perm -0002 -not -path "/proc/*" -not -path "/sys/*" -print -exec chmod o-w {} + | wc -l
+      find / -xdev -ignore_readdir_race -type f -perm -0002 -not -path "/proc/*" -not -path "/sys/*" -print -exec chmod o-w {} + | wc -l
     executable: /bin/bash
   register: cis_maintenance_ww_files
   changed_when: cis_maintenance_ww_files.stdout | int > 0
@@ -31,18 +31,22 @@
   ansible.builtin.shell:
     cmd: >-
       set -o pipefail;
-      find / -xdev -type d -perm -0002 ! -perm -1000 -print -exec chmod o+t {} + | wc -l
+      find / -xdev -ignore_readdir_race -type d -perm -0002 ! -perm -1000 -print -exec chmod o+t {} + | wc -l
     executable: /bin/bash
   register: cis_maintenance_ww_dirs
   changed_when: cis_maintenance_ww_dirs.stdout | int > 0
   when: "'7.1.11' not in (cis_exception_ids | default([]))"
   tags: [cis_7_1_11, cis_maintenance, molecule-notest]
 
+# Owner and group are fixed separately (a file with a valid owner keeps it); container storage is skipped: its
+# files belong to UIDs that only exist inside the containers.
 - name: 7.1.12 | files without an owner or group on local filesystems are given to root
   ansible.builtin.shell:
     cmd: >-
       set -o pipefail;
-      find / -xdev \( -nouser -o -nogroup \) -not -path "/proc/*" -print -exec chown -h root:root {} + | wc -l
+      prune='( -path /var/lib/docker -o -path /var/lib/containerd -o -path /var/lib/containers ) -prune';
+      { find / -xdev -ignore_readdir_race $prune -o -nouser -print -exec chown -h root {} + ;
+        find / -xdev -ignore_readdir_race $prune -o -nogroup -print -exec chgrp -h root {} + ; } | wc -l
     executable: /bin/bash
   register: cis_maintenance_unowned
   changed_when: cis_maintenance_unowned.stdout | int > 0

@@ -72,8 +72,10 @@ reports changes on every run hides real drift in noise.
   claimed rules that still fail; failing rules that are neither claimed nor excepted.
 - **Gate** (exit 1): the score excluding exceptions below 90 %, any claimed rule failing, any regression (even when
   the overall score rose), or a second run with `changed > 0` or `failed > 0`.
-- **Errors, not scores** (exit 2): a missing, empty or truncated scan, a profile that selected no rules, results that
-  are all `error` or `notchecked`, or a missing recap. A scan that did not happen must never read as 100 % or 0 %.
+- **Errors, not scores** (exit 2): a missing, empty or truncated scan, a profile that selected no rules, no rule that
+  passed or failed, more than 5 % of the selected rules in `error` or `notchecked`, or a missing recap. A scan that
+  did not happen must never read as 100 % or 0 %. A claimed rule that ends in `error` or `notchecked` counts as
+  still failing.
 
 ## 5. Roles
 
@@ -101,7 +103,7 @@ reports changes on every run hides real drift in noise.
 |---|---|
 | `lint` | yamllint, ansible-lint (production profile), ruff, mypy (strict), shellcheck |
 | `unit` | `cisreport` on fixtures: parsing, empty and mismatched scans, exceptions, regressions, claimed failing, recap parsing, threshold edges, report escaping; coverage gate 90 % |
-| `molecule` | each role in an Ubuntu 24.04 container: converge, idempotence, verify (kernel, bootloader and firewall tasks are tagged to run only on the VM) |
+| `molecule` | each role in an Ubuntu 24.04 container: converge, idempotence, verify (tasks that need a real kernel, bootloader, firewall, running services or a whole filesystem are tagged to run only on the VM) |
 | `harden` | the whole cycle on the runner VM; artifacts: scans, report, playbook logs; a Markdown job summary |
 | `secrets` | gitleaks over the full history |
 
@@ -184,6 +186,8 @@ the results file, and the fixes are in section 8.
 - The score comes from the ComplianceAsCode profile, which follows CIS but is not CIS-CAT and not a certification.
 - Settings that need a reboot (AppArmor on the kernel command line, the bootloader password) are written and checked
   by the scanner, not booted into.
+- On a real server, some decisions stay with its owner (services to keep, outbound ports, the bootloader password
+  hash, accounts with old passwords); the README lists them and the guards the roles apply.
 - Not covered: Level 2, Windows Server, CIS-CAT Pro, fleet management.
 
 ## 10. Reproduce it

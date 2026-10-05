@@ -5,3 +5,24 @@ cis_services_server_packages: [rsync, apache2, nginx, avahi-daemon, isc-dhcp-ser
 cis_services_client_packages: [telnet, inetutils-telnet, ftp, tnftp, nis, rsh-client, talk, ldap-utils]
 # The profile's authorized servers (var_multiple_time_servers, selector "ubuntu")
 cis_services_time_servers: [0.ubuntu.pool.ntp.org, 1.ubuntu.pool.ntp.org, 2.ubuntu.pool.ntp.org, 3.ubuntu.pool.ntp.org]
+# Removing a server package whose service is running stops the role unless this is true (a host owner's decision)
+cis_services_remove_active_services: false
+# systemd unit of each listed server package, to see whether it runs
+cis_services_server_units:
+  rsync: rsync.service
+  apache2: apache2.service
+  nginx: nginx.service
+  avahi-daemon: avahi-daemon.service
+  isc-dhcp-server: isc-dhcp-server.service
+  bind9: named.service
+  dnsmasq: dnsmasq.service
+  vsftpd: vsftpd.service
+  slapd: slapd.service
+  nfs-kernel-server: nfs-server.service
+  ypserv: ypserv.service
+  cups: cups.service
+  samba: smbd.service
+  snmpd: snmpd.service
+  tftpd-hpa: tftpd-hpa.service
+  squid: squid.service
+  xinetd: xinetd.service
