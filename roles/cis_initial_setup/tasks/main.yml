@@ -44,12 +44,13 @@
   when: "'1.3.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_1_3_1_1, cis_initial_setup]
 
-# Each parameter is added to the existing GRUB_CMDLINE_LINUX (console, NIC naming, encryption... stay as they are)
+# Each parameter is added to the existing GRUB_CMDLINE_LINUX (console, NIC naming, encryption... stay as they are);
+# a parameter counts as present between spaces or quotes, so a second run changes nothing
 - name: 1.3.1.2 | AppArmor is enabled in the bootloader configuration
   ansible.builtin.lineinfile:
     path: /etc/default/grub
     backrefs: true
-    regexp: '^GRUB_CMDLINE_LINUX="((?![^"]*(?<!\S){{ item | regex_escape }}(?!\S))[^"]*?)\s*"$'
+    regexp: '^GRUB_CMDLINE_LINUX="((?![^"]*(?<![^\s"]){{ item | regex_escape }}(?![^\s"]))[^"]*?)\s*"$'
     line: 'GRUB_CMDLINE_LINUX="\1 {{ item }}"'
   loop: "{{ cis_initial_setup_grub_cmdline.split() }}"
   notify: Update grub

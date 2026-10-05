@@ -95,4 +95,3 @@ controls:
   - {cis: "6.1.3.3", title: "Ensure journald is configured to send logs to rsyslog", role: cis_logging, rules: [journald_forward_to_syslog]}
   - {cis: "6.1.4.1", title: "Verify permissions of log files", role: cis_logging, rules: [permissions_local_var_log, file_ownerships_var_log]}
   - {cis: "7.1.11", title: "Ensure No World-Writable Files Exist", role: cis_maintenance, rules: [file_permissions_unauthorized_world_writable]}
-  - {cis: "7.1.12", title: "Ensure All Files Are Owned by a User", role: cis_maintenance, rules: [no_files_unowned_by_user]}

@@ -48,8 +48,8 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
   Si la versión cambia o desaparece, la ejecución se detiene; el escáner nunca se reemplaza en silencio.
 - **Lo que se declara sale de la línea base real.** `policy/controls.yml` asocia cada id de CIS con su rol y con las
   reglas del escáner que lo verifican. Se construyó a partir del primer escaneo de un runner por defecto: cada regla
-  que falló y que un rol corrige, más las reglas que solo aplican cuando un rol instala su paquete — 92 controles,
-  127 reglas. Si alguna sigue fallando después del endurecimiento, CI falla.
+  que falló y que un rol corrige, más las reglas que solo aplican cuando un rol instala su paquete — 91 controles,
+  126 reglas. Si alguna sigue fallando después del endurecimiento, CI falla.
 - **Excepciones como datos.** Un control omitido es una entrada con el id de CIS, sus reglas, un motivo y un rol
   responsable. Las tareas lo omiten, el informe lo lista y muestra el puntaje con y sin él, y una excepción para una
   regla que los roles también declaran, sin motivo o para una regla que el perfil no tiene es un error de
