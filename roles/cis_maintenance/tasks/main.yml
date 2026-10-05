@@ -13,50 +13,39 @@
   when: "'7.1' not in (cis_exception_ids | default([]))"
   tags: [cis_7_1, cis_maintenance]
 
-- name: 7.1.11 | world-writable files on local filesystems (find)
-  ansible.builtin.command: find / -xdev -type f -perm -0002 -not -path "/proc/*" -not -path "/sys/*"
+# Filesystem-wide fixes run as one find -exec ... {} + each: a runner image has tens of thousands of matches
+# (toolchains, miniconda), and one module call per file took more than 50 minutes. Each command prints how many
+# paths it fixed; a second run finds none, so it reports no change.
+- name: 7.1.11 | world-writable files on local filesystems lose the write bit for others
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail;
+      find / -xdev -type f -perm -0002 -not -path "/proc/*" -not -path "/sys/*" -print -exec chmod o-w {} + | wc -l
+    executable: /bin/bash
   register: cis_maintenance_ww_files
-  changed_when: false
-  when: "'7.1.11' not in (cis_exception_ids | default([]))"
-  tags: [cis_7_1_11, cis_maintenance, molecule-notest]
-
-- name: 7.1.11 | world-writable files lose the write bit for others
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: "o-w"
-  loop: "{{ cis_maintenance_ww_files.stdout_lines | default([]) }}"
-  when: "'7.1.11' not in (cis_exception_ids | default([]))"
-  tags: [cis_7_1_11, cis_maintenance, molecule-notest]
-
-- name: 7.1.11 | world-writable directories without the sticky bit (find)
-  ansible.builtin.command: find / -xdev -type d -perm -0002 ! -perm -1000
-  register: cis_maintenance_ww_dirs
-  changed_when: false
+  changed_when: cis_maintenance_ww_files.stdout | int > 0
   when: "'7.1.11' not in (cis_exception_ids | default([]))"
   tags: [cis_7_1_11, cis_maintenance, molecule-notest]
 
 - name: 7.1.11 | world-writable directories get the sticky bit
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: "o+t"
-  loop: "{{ cis_maintenance_ww_dirs.stdout_lines | default([]) }}"
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail;
+      find / -xdev -type d -perm -0002 ! -perm -1000 -print -exec chmod o+t {} + | wc -l
+    executable: /bin/bash
+  register: cis_maintenance_ww_dirs
+  changed_when: cis_maintenance_ww_dirs.stdout | int > 0
   when: "'7.1.11' not in (cis_exception_ids | default([]))"
   tags: [cis_7_1_11, cis_maintenance, molecule-notest]
 
-- name: 7.1.12 | files without an owner or group on local filesystems (find)
-  ansible.builtin.command: find / -xdev ( -nouser -o -nogroup ) -not -path "/proc/*"
+- name: 7.1.12 | files without an owner or group on local filesystems are given to root
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail;
+      find / -xdev \( -nouser -o -nogroup \) -not -path "/proc/*" -print -exec chown -h root:root {} + | wc -l
+    executable: /bin/bash
   register: cis_maintenance_unowned
-  changed_when: false
-  when: "'7.1.12' not in (cis_exception_ids | default([]))"
-  tags: [cis_7_1_12, cis_maintenance, molecule-notest]
-
-- name: 7.1.12 | unowned files are given to root
-  ansible.builtin.file:
-    path: "{{ item }}"
-    owner: root
-    group: root
-    follow: false
-  loop: "{{ cis_maintenance_unowned.stdout_lines | default([]) }}"
+  changed_when: cis_maintenance_unowned.stdout | int > 0
   when: "'7.1.12' not in (cis_exception_ids | default([]))"
   tags: [cis_7_1_12, cis_maintenance, molecule-notest]
 
