@@ -109,7 +109,42 @@ It runs on every pull request, on pushes to `main`, weekly and on demand.
 
 ## 7. Results
 
-Results are added from the first CI runs.
+From [run 37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201) on `main`
+(2026-10-05), the first green run; `docs/example-report.html` is its report. OpenSCAP 1.3.9 (the runner's
+`openscap-scanner` package), SCAP Security Guide v0.1.82, profile `cis_level1_server` (408 selected rules).
+
+| | Before | After |
+|---|---|---|
+| Score, all rules | 64.5 % | **97.5 %** |
+| Score, excluding the documented exceptions | 66.3 % | **99.7 %** |
+| Pass / fail | 222 / 122 | 346 / 9 |
+| Not applicable / not checked / error | 64 / 0 / 0 | 53 / 0 / 0 |
+
+- **Fixed**: 111 rules went from fail to pass. **Regressions**: 0. **Claimed rules still failing**: 0 (92 CIS
+  controls, 127 rules claimed).
+- **Still failing (9)**: the 8 rules of the documented exceptions (separate `/tmp` partition, the nftables variant
+  of the firewall section, AIDE) and 1 open item, `file_permission_user_init_files`: the role sets every regular dot
+  file in the home directories to `0740` or less, but the runner's home directories contain dot-name symbolic links
+  (`.ghcup`), whose mode always reads as `0777` to the check. It is reported, not claimed and not hidden.
+- **Applicability moved too** (not applicable 64 → 53): 15 rules became applicable and pass — 12 password-quality
+  rules once `libpam-pwquality` is installed and 3 `systemd-timesyncd` rules — and 4 chrony rules became not
+  applicable once chrony was removed.
+- **Idempotency**: first run `ok=74 changed=57 failed=0`; second run `ok=64 changed=0 failed=0`.
+- **Time**: the `harden` job takes about 15 minutes (two scans, two playbook runs); the whole pipeline about the same,
+  since the other jobs run in parallel.
+
+**How it got there.** The first complete cycle
+([run 37327562351](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37327562351)) already scored 91.5 %
+(93.6 % excluding exceptions), over the 90 % threshold, and the gate still failed it: one regression, 8 claimed rules
+still failing and a second run that changed something. Each cause came from reading the scanner's own checks in
+the results file, and the fixes are in section 8.
+
+**Demo pull requests** (closed unmerged; the ruleset blocks the merge):
+
+| PR | Change | What happened |
+|---|---|---|
+| [#1](https://github.com/santorest/lab-11-ansible-cis/pull/1) | SSH `PermitRootLogin yes` in the `cis_access` defaults | the score stayed at 97.2 % (99.4 % excluding exceptions), over the threshold, but the gate failed on the claimed rule `sshd_disable_root_login` (CIS 5.1.20); Molecule verify for `cis_access` failed on its `PermitRootLogin no` assertion |
+| [#2](https://github.com/santorest/lab-11-ansible-cis/pull/2) | a `shell` task in `cis_maintenance` that writes the date to a log file, without `changed_when` | ansible-lint failed (`no-changed-when`); Molecule's idempotence test failed for `cis_maintenance`; the `harden` gate failed with "second run is not idempotent: localhost changed=1" although the score was 97.5 % with no claimed rule failing |
 
 ## 8. Lessons
 
@@ -128,11 +163,24 @@ Results are added from the first CI runs.
   quietly skipped task.
 - **Tools read configuration from where they run.** Molecule runs from the role's directory, where the repository's
   `ansible.cfg` (and its collections path) is not read; CI passes the collections path explicitly.
+- **Another component can undo a setting.** ufw re-applies its own `/etc/ufw/sysctl.conf` (with
+  `log_martians=0`) when it is enabled, and Ubuntu's `10-network-security.conf` sets `rp_filter=2`. Our sysctl file
+  was right, yet the scanner failed four rules and the second playbook run "fixed" the value again — which is how
+  the idempotency check found it. The role now makes every file that sets those keys agree.
+- **The check reads one file; the tool reads several.** `pam_pwquality` reads `pwquality.conf.d`, but the profile's
+  checks read only `pwquality.conf`, and the `TMOUT` check matches one exact three-line form. Settings that work are
+  not always settings the scanner can see; the role writes them where and how the check looks.
+- **Fixing one rule can break another.** Creating `/etc/cron.allow` (a rule that failed) with the wrong group made a
+  rule that had passed — because the file did not exist — fail. The gate's regression check caught it even though
+  the overall score had risen.
+- **Per-item loops do not scale to a real image.** The runner has more than 15,000 world-writable files under its
+  toolchains; one Ansible module call per file ran for 54 minutes and hit the job timeout. One `find … -exec … {} +`
+  per rule does the same work in seconds and still reports whether anything changed.
 
 ## 9. Limits
 
 - The target is a GitHub-hosted runner, not a production server; three controls are exceptions because the runner is
-  booted and short-lived.
+  booted and short-lived, and one rule stays open because of the runner's own dot-name symbolic links.
 - The score comes from the ComplianceAsCode profile, which follows CIS but is not CIS-CAT and not a certification.
 - Settings that need a reboot (AppArmor on the kernel command line, the bootloader password) are written and checked
   by the scanner, not booted into.
