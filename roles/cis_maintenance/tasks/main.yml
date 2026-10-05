@@ -69,3 +69,7 @@
   changed_when: false
   failed_when: cis_maintenance_empty_pw.stdout | length > 0
   tags: [cis_7_2, cis_maintenance]
+
+- name: Record when the hardening last ran
+  ansible.builtin.shell: date > /var/log/cis-last-run
+  tags: [cis_maintenance]
