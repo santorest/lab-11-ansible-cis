@@ -7,7 +7,7 @@ compares the two scans and fails CI on a low score, a claimed control that still
 that changes something. Every control is traceable from its CIS id to the role that applies it and to the scanner
 rules that check it.
 
-**Status: in progress.** Every result below comes from GitHub Actions runs on a disposable runner.
+**Status: completed.** Every result below comes from GitHub Actions runs on a disposable runner.
 
 > **Warning.** `scripts/run-hardening.sh` hardens the machine it runs on: firewall default-deny, SSH and PAM changes,
 > packages removed, a bootloader password. Run it only on a disposable Ubuntu 24.04 host (a CI runner or a throwaway

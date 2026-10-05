@@ -3,7 +3,7 @@ title: "Ansible CIS Hardening for Ubuntu 24.04"
 id: "lab-11-ansible-cis"
 category: "Scripting & Automation"
 type: "Lab"
-status: "in progress"
+status: "completed"
 date: "2026-10-05"
 time_to_reproduce: "About 30 minutes: one CI run (fork, enable Actions, run CI)"
 skills: [Ansible, OpenSCAP, SCAP Security Guide, CIS Benchmarks, Molecule, ansible-lint, Python, Ubuntu, GitHub Actions]

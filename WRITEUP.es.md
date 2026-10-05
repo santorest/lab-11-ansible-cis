@@ -3,7 +3,7 @@ title: "Endurecimiento CIS con Ansible para Ubuntu 24.04"
 id: "lab-11-ansible-cis"
 category: "Scripting y automatización"
 type: "Laboratorio"
-status: "en curso"
+status: "completado"
 date: "2026-10-05"
 time_to_reproduce: "Unos 30 minutos: una ejecución de CI (fork, habilitar Actions, ejecutar CI)"
 skills: [Ansible, OpenSCAP, SCAP Security Guide, CIS Benchmarks, Molecule, ansible-lint, Python, Ubuntu, GitHub Actions]
