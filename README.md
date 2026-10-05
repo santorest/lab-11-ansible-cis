@@ -44,7 +44,7 @@ runner's home directories; see [WRITEUP.md](WRITEUP.md#7-results)).
 5. **Scan after** with the same content and profile.
 6. **Report and gate**: `cisreport` reads both scans, the second-run recap,
    [`policy/controls.yml`](policy/controls.yml) (CIS id → role → SSG rules) and the exceptions in
-   [`group_vars/all.yml`](group_vars/all.yml); it writes `out/report.html`, `out/summary.md` and `out/results.json`
+   [`inventory/group_vars/all.yml`](inventory/group_vars/all.yml); it writes `out/report.html`, `out/summary.md` and `out/results.json`
    and applies the gate.
 
 ## Quick start

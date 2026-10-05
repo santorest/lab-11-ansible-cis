@@ -89,7 +89,7 @@ reports changes on every run hides real drift in noise.
 | `cis_logging` | 6.1 | journald forwards to rsyslog, `/var/log` permissions and ownership |
 | `cis_maintenance` | 7.1–7.2 | account file permissions, world-writable files, unowned files, user dot files, empty passwords |
 
-**Exceptions** (in `group_vars/all.yml`):
+**Exceptions** (in `inventory/group_vars/all.yml`):
 
 | CIS | Rules | Reason |
 |---|---|---|
@@ -178,6 +178,11 @@ the results file, and the fixes are in section 8.
 - **Per-item loops do not scale to a real image.** The runner has more than 15,000 world-writable files under its
   toolchains; one Ansible module call per file ran for 54 minutes and hit the job timeout. One `find … -exec … {} +`
   per rule does the same work in seconds and still reports whether anything changed.
+- **A configuration file in the wrong folder is silently ignored.** The exceptions and tunables lived in a
+  `group_vars/` folder at the repository root, where `cisreport` read them but Ansible does not look; the play ran
+  on the role defaults. It changed little — the excepted tasks were also off by default, and only the SSH
+  `AllowGroups` list differed — and it surfaced only when the final review added an SSH lockout check. The file now
+  sits next to the inventory, and CI fails if the play cannot see the exceptions.
 
 ## 9. Limits
 

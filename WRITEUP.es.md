@@ -93,7 +93,7 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
 | `cis_logging` | 6.1 | journald reenvía a rsyslog, permisos y propietarios en `/var/log` |
 | `cis_maintenance` | 7.1–7.2 | permisos de archivos de cuentas, archivos escribibles por todos, archivos sin propietario, archivos ocultos de usuario, contraseñas vacías |
 
-**Excepciones** (en `group_vars/all.yml`):
+**Excepciones** (en `inventory/group_vars/all.yml`):
 
 | CIS | Reglas | Motivo |
 |---|---|---|
@@ -188,6 +188,12 @@ verificaciones del propio escáner en el archivo de resultados; las correcciones
 - **Los bucles por elemento no escalan a una imagen real.** El runner tiene más de 15.000 archivos escribibles por
   todos en sus cadenas de herramientas; una llamada a un módulo de Ansible por archivo tardó 54 minutos y agotó el
   tiempo del trabajo. Un `find … -exec … {} +` por regla hace lo mismo en segundos y sigue reportando si cambió algo.
+- **Un archivo de configuración en la carpeta equivocada se ignora en silencio.** Las excepciones y los ajustes
+  estaban en una carpeta `group_vars/` en la raíz del repositorio, donde `cisreport` los leía pero Ansible no busca;
+  el playbook se ejecutó con los valores por defecto de los roles. Cambió poco — las tareas exceptuadas también
+  estaban desactivadas por defecto y solo difería la lista `AllowGroups` de SSH — y salió a la luz solo cuando la
+  revisión final agregó una verificación contra el bloqueo de SSH. El archivo ahora está junto al inventario, y CI
+  falla si el playbook no ve las excepciones.
 
 ## 9. Límites
 
