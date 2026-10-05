@@ -15,18 +15,19 @@ rules that check it.
 
 ## Results
 
-From [run 37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201) (OpenSCAP 1.3.9,
+From [run 37353023826](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826) (final code; OpenSCAP 1.3.9,
 SSG v0.1.82, 408 selected rules); [`docs/example-report.html`](docs/example-report.html) is its report.
 
 | | Before | After |
 |---|---|---|
-| Score, all rules | 64.5 % | **97.5 %** |
-| Score, excluding documented exceptions | 66.3 % | **99.7 %** |
-| Pass / fail | 222 / 122 | 346 / 9 |
+| Score, all rules | 64.5 % | **97.2 %** |
+| Score, excluding documented exceptions | 66.3 % | **99.4 %** |
+| Pass / fail | 222 / 122 | 345 / 10 |
 
-111 rules fixed, 0 regressions, 0 claimed rules still failing; the second playbook run reported `changed=0`. The 9
-rules still failing are the 8 rules of the documented exceptions and one open item (dot-name symbolic links in the
-runner's home directories; see [WRITEUP.md](WRITEUP.md#7-results)).
+110 rules fixed, 0 regressions, 0 claimed rules still failing; the second playbook run reported `changed=0`. The 10
+rules still failing are the 8 rules of the documented exceptions and two open items that come from the runner image
+(dot-name symbolic links in home directories; Docker image layers, which the role deliberately leaves alone); see
+[WRITEUP.md](WRITEUP.md#7-results).
 
 ## How the cycle works
 
