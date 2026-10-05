@@ -81,8 +81,8 @@ def render_markdown(
         f"| Score (all rules) | {_pct(score(c.before))} | {_pct(score(c.after))} |",
         f"| Score (excluding exceptions) | {_pct(score(c.before_excl))} | {_pct(score(c.after_excl))} |",
         f"| Pass / fail | {c.before.passed} / {c.before.failed} | {c.after.passed} / {c.after.failed} |",
-        f"| Not applicable / not checked | {c.before.notapplicable} / {c.before.notchecked} | "
-        f"{c.after.notapplicable} / {c.after.notchecked} |",
+        f"| Not applicable / not checked / error | {c.before.notapplicable} / {c.before.notchecked} / "
+        f"{c.before.error} | {c.after.notapplicable} / {c.after.notchecked} / {c.after.error} |",
         "",
         f"Fixed {len(c.fixed)} · regressions {len(c.regressions)} · still failing {len(c.still_failing)} "
         f"(exceptions {len(c.excepted_failing)}, claimed {len(c.claimed_failing)}, open {len(c.open_failing)}) · "
@@ -135,7 +135,10 @@ def render_html(
         f"<tr><td>Score (excluding exceptions)</td><td>{_pct(score(c.before_excl))}</td>"
         f"<td>{_pct(score(c.after_excl))}</td></tr>"
         f"<tr><td>Pass / fail</td><td>{c.before.passed} / {c.before.failed}</td>"
-        f"<td>{c.after.passed} / {c.after.failed}</td></tr></table>"
+        f"<td>{c.after.passed} / {c.after.failed}</td></tr>"
+        f"<tr><td>Not applicable / not checked / error</td>"
+        f"<td>{c.before.notapplicable} / {c.before.notchecked} / {c.before.error}</td>"
+        f"<td>{c.after.notapplicable} / {c.after.notchecked} / {c.after.error}</td></tr></table>"
         f"<h2>Regressions</h2>{table(c.regressions)}<h2>Claimed but failing</h2>{table(c.claimed_failing)}"
         f"<h2>Open</h2>{table(c.open_failing)}"
         f"<h2>Documented exceptions</h2><table><tr><th>Rule</th><th>CIS</th><th>Reason</th></tr>{excepted}</table>"

@@ -52,3 +52,16 @@ def test_reports_escape_titles(before: bytes, after: bytes):
     html, md = render_html(*args), render_markdown(*args)
     assert "<script>" not in html and "&lt;script&gt;" in html
     assert "\\| pipe" in md
+
+
+def test_threshold_edges(before: bytes, after: bytes):
+    _, data = build(before, after)
+    data |= {"claimed_failing": [], "regressions": [], "idempotent": True, "threshold": 90.0}
+    assert failures(data | {"scores": {"after_excl": 90.0}}) == []
+    assert any("below 90" in m for m in failures(data | {"scores": {"after_excl": 89.99}}))
+    assert any("none" in m for m in failures(data | {"scores": {"after_excl": None}}))
+
+
+def test_html_report_shows_unchecked_counts(before: bytes, after: bytes):
+    args, _ = build(before, after)
+    assert "Not applicable / not checked / error" in render_html(*args)
