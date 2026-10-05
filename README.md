@@ -7,11 +7,26 @@ compares the two scans and fails CI on a low score, a claimed control that still
 that changes something. Every control is traceable from its CIS id to the role that applies it and to the scanner
 rules that check it.
 
-**Status: in progress.** Results are added from the first CI runs.
+**Status: in progress.** Every result below comes from GitHub Actions runs on a disposable runner.
 
 > **Warning.** `scripts/run-hardening.sh` hardens the machine it runs on: firewall default-deny, SSH and PAM changes,
 > packages removed, a bootloader password. Run it only on a disposable Ubuntu 24.04 host (a CI runner or a throwaway
 > VM).
+
+## Results
+
+From [run 37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201) (OpenSCAP 1.3.9,
+SSG v0.1.82, 408 selected rules); [`docs/example-report.html`](docs/example-report.html) is its report.
+
+| | Before | After |
+|---|---|---|
+| Score, all rules | 64.5 % | **97.5 %** |
+| Score, excluding documented exceptions | 66.3 % | **99.7 %** |
+| Pass / fail | 222 / 122 | 346 / 9 |
+
+111 rules fixed, 0 regressions, 0 claimed rules still failing; the second playbook run reported `changed=0`. The 9
+rules still failing are the 8 rules of the documented exceptions and one open item (dot-name symbolic links in the
+runner's home directories; see [WRITEUP.md](WRITEUP.md#7-results)).
 
 ## How the cycle works
 

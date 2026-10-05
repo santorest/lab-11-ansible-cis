@@ -114,7 +114,43 @@ Se ejecuta en cada pull request, en cada push a `main`, semanalmente y a demanda
 
 ## 7. Resultados
 
-Los resultados se agregan a partir de las primeras ejecuciones de CI.
+De la [ejecución 37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201) en `main`
+(2026-10-05), la primera en verde; `docs/example-report.html` es su informe. OpenSCAP 1.3.9 (el paquete
+`openscap-scanner` del runner), SCAP Security Guide v0.1.82, perfil `cis_level1_server` (408 reglas seleccionadas).
+
+| | Antes | Después |
+|---|---|---|
+| Puntaje, todas las reglas | 64,5 % | **97,5 %** |
+| Puntaje, sin las excepciones documentadas | 66,3 % | **99,7 %** |
+| Cumplen / fallan | 222 / 122 | 346 / 9 |
+| No aplican / no verificadas / error | 64 / 0 / 0 | 53 / 0 / 0 |
+
+- **Corregidas**: 111 reglas pasaron de fallar a cumplir. **Regresiones**: 0. **Reglas declaradas que siguen
+  fallando**: 0 (92 controles CIS, 127 reglas declaradas).
+- **Siguen fallando (9)**: las 8 reglas de las excepciones documentadas (partición separada para `/tmp`, la variante
+  nftables de la sección de firewall, AIDE) y 1 punto abierto, `file_permission_user_init_files`: el rol deja cada
+  archivo oculto regular de los directorios personales en `0740` o menos, pero los directorios personales del runner
+  contienen enlaces simbólicos con nombre oculto (`.ghcup`), cuyo modo la verificación siempre lee como `0777`. Se
+  reporta; no se declara ni se oculta.
+- **También cambió la aplicabilidad** (no aplican 64 → 53): 15 reglas pasaron a aplicar y cumplen — 12 de calidad de
+  contraseñas al instalar `libpam-pwquality` y 3 de `systemd-timesyncd` — y 4 reglas de chrony dejaron de aplicar al
+  eliminar chrony.
+- **Idempotencia**: primera ejecución `ok=74 changed=57 failed=0`; segunda ejecución `ok=64 changed=0 failed=0`.
+- **Tiempo**: el trabajo `harden` tarda unos 15 minutos (dos escaneos, dos ejecuciones del playbook); el pipeline
+  completo, más o menos lo mismo, porque los demás trabajos corren en paralelo.
+
+**Cómo se llegó ahí.** El primer ciclo completo
+([ejecución 37327562351](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37327562351)) ya obtuvo
+91,5 % (93,6 % sin excepciones), por encima del umbral del 90 %, y aun así la compuerta lo rechazó: una regresión,
+8 reglas declaradas que seguían fallando y una segunda ejecución que cambió algo. Cada causa salió de leer las
+verificaciones del propio escáner en el archivo de resultados; las correcciones están en la sección 8.
+
+**Pull requests de demostración** (cerrados sin fusionar; el ruleset bloquea la fusión):
+
+| PR | Cambio | Qué pasó |
+|---|---|---|
+| [#1](https://github.com/santorest/lab-11-ansible-cis/pull/1) | `PermitRootLogin yes` de SSH en los valores por defecto de `cis_access` | el puntaje se mantuvo en 97,2 % (99,4 % sin excepciones), por encima del umbral, pero la compuerta falló por la regla declarada `sshd_disable_root_login` (CIS 5.1.20); la verificación de Molecule de `cis_access` falló en su aserción `PermitRootLogin no` |
+| [#2](https://github.com/santorest/lab-11-ansible-cis/pull/2) | una tarea `shell` en `cis_maintenance` que escribe la fecha en un archivo de registro, sin `changed_when` | ansible-lint falló (`no-changed-when`); la prueba de idempotencia de Molecule falló para `cis_maintenance`; la compuerta de `harden` falló con "second run is not idempotent: localhost changed=1" aunque el puntaje era 97,5 % sin ninguna regla declarada fallando |
 
 ## 8. Lecciones
 
@@ -136,11 +172,27 @@ Los resultados se agregan a partir de las primeras ejecuciones de CI.
 - **Las herramientas leen la configuración desde donde se ejecutan.** Molecule se ejecuta desde el directorio del
   rol, donde no se lee el `ansible.cfg` del repositorio (ni su ruta de colecciones); CI pasa esa ruta de forma
   explícita.
+- **Otro componente puede deshacer un ajuste.** ufw vuelve a aplicar su propio `/etc/ufw/sysctl.conf` (con
+  `log_martians=0`) al habilitarse, y el `10-network-security.conf` de Ubuntu fija `rp_filter=2`. Nuestro archivo de
+  sysctl estaba bien, pero el escáner falló cuatro reglas y la segunda ejecución del playbook volvió a "corregir" el
+  valor — así lo encontró la verificación de idempotencia. El rol ahora hace que coincidan todos los archivos que
+  fijan esas claves.
+- **La verificación lee un archivo; la herramienta lee varios.** `pam_pwquality` lee `pwquality.conf.d`, pero las
+  verificaciones del perfil leen solo `pwquality.conf`, y la de `TMOUT` busca una forma exacta de tres líneas. Un
+  ajuste que funciona no siempre es uno que el escáner puede ver; el rol lo escribe donde y como la verificación lo
+  busca.
+- **Corregir una regla puede romper otra.** Crear `/etc/cron.allow` (una regla que fallaba) con el grupo equivocado
+  hizo fallar una regla que cumplía — porque el archivo no existía. La verificación de regresiones de la compuerta lo
+  detectó aunque el puntaje total había subido.
+- **Los bucles por elemento no escalan a una imagen real.** El runner tiene más de 15.000 archivos escribibles por
+  todos en sus cadenas de herramientas; una llamada a un módulo de Ansible por archivo tardó 54 minutos y agotó el
+  tiempo del trabajo. Un `find … -exec … {} +` por regla hace lo mismo en segundos y sigue reportando si cambió algo.
 
 ## 9. Límites
 
 - El objetivo es un runner alojado por GitHub, no un servidor de producción; tres controles son excepciones porque el
-  runner ya está arrancado y es efímero.
+  runner ya está arrancado y es efímero, y una regla queda abierta por los propios enlaces simbólicos con nombre
+  oculto del runner.
 - El puntaje viene del perfil de ComplianceAsCode, que sigue a CIS pero no es CIS-CAT ni una certificación.
 - Los ajustes que requieren reiniciar (AppArmor en la línea de comandos del kernel, la contraseña del cargador de
   arranque) se escriben y el escáner los verifica, pero no se arranca con ellos.
