@@ -111,28 +111,35 @@ It runs on every pull request, on pushes to `main`, weekly and on demand.
 
 ## 7. Results
 
-From [run 37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201) on `main`
-(2026-10-05), the first green run; `docs/example-report.html` is its report. OpenSCAP 1.3.9 (the runner's
-`openscap-scanner` package), SCAP Security Guide v0.1.82, profile `cis_level1_server` (408 selected rules).
+From [run 37353023826](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826) (2026-10-05), the final code after the
+review fixes; `docs/example-report.html` is its report. OpenSCAP 1.3.9 (the runner's `openscap-scanner` package),
+SCAP Security Guide v0.1.82, profile `cis_level1_server` (408 selected rules).
 
 | | Before | After |
 |---|---|---|
-| Score, all rules | 64.5 % | **97.5 %** |
-| Score, excluding the documented exceptions | 66.3 % | **99.7 %** |
-| Pass / fail | 222 / 122 | 346 / 9 |
+| Score, all rules | 64.5 % | **97.2 %** |
+| Score, excluding the documented exceptions | 66.3 % | **99.4 %** |
+| Pass / fail | 222 / 122 | 345 / 10 |
 | Not applicable / not checked / error | 64 / 0 / 0 | 53 / 0 / 0 |
 
-- **Fixed**: 111 rules went from fail to pass. **Regressions**: 0. **Claimed rules still failing**: 0 (92 CIS
-  controls, 127 rules claimed).
-- **Still failing (9)**: the 8 rules of the documented exceptions (separate `/tmp` partition, the nftables variant
-  of the firewall section, AIDE) and 1 open item, `file_permission_user_init_files`: the role sets every regular dot
-  file in the home directories to `0740` or less, but the runner's home directories contain dot-name symbolic links
-  (`.ghcup`), whose mode always reads as `0777` to the check. It is reported, not claimed and not hidden.
+- **Fixed**: 110 rules went from fail to pass. **Regressions**: 0. **Claimed rules still failing**: 0 (91 CIS
+  controls, 126 rules claimed).
+- **Still failing (10)**: the 8 rules of the documented exceptions (separate `/tmp` partition, the nftables variant
+  of the firewall section, AIDE) and 2 open items, reported, not claimed and not hidden:
+  - `file_permission_user_init_files`: the role sets every regular dot file in the home directories to `0740` or
+    less, but the runner's home directories contain dot-name symbolic links (`.ghcup`), whose mode always reads as
+    `0777` to the check.
+  - `no_files_unowned_by_user`: the only unowned files are inside Docker's image layers (`/var/lib/docker/overlay2`),
+    whose UIDs exist only inside containers. The role deliberately leaves container storage alone — giving those
+    files to root breaks containers on a real host.
+- **The first green run**, [37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201), scored 97.5 % (99.7 % excluding
+  exceptions) with only the first open item: the role then gave every unowned file to root, Docker's image layers
+  included. The final review flagged that as unsafe on a real server; the 0.3-point drop is the price of the fix.
 - **Applicability moved too** (not applicable 64 → 53): 15 rules became applicable and pass — 12 password-quality
   rules once `libpam-pwquality` is installed and 3 `systemd-timesyncd` rules — and 4 chrony rules became not
   applicable once chrony was removed.
-- **Idempotency**: first run `ok=74 changed=57 failed=0`; second run `ok=64 changed=0 failed=0`.
-- **Time**: the `harden` job takes about 15 minutes (two scans, two playbook runs); the whole pipeline about the same,
+- **Idempotency**: first run `ok=77 changed=55 failed=0`; second run `ok=68 changed=0 failed=0`.
+- **Time**: the `harden` job takes 12–16 minutes (two scans, two playbook runs); the whole pipeline about the same,
   since the other jobs run in parallel.
 
 **How it got there.** The first complete cycle
@@ -187,7 +194,7 @@ the results file, and the fixes are in section 8.
 ## 9. Limits
 
 - The target is a GitHub-hosted runner, not a production server; three controls are exceptions because the runner is
-  booted and short-lived, and one rule stays open because of the runner's own dot-name symbolic links.
+  booted and short-lived, and two rules stay open because of the runner image (dot-name symbolic links; Docker image layers).
 - The score comes from the ComplianceAsCode profile, which follows CIS but is not CIS-CAT and not a certification.
 - Settings that need a reboot (AppArmor on the kernel command line, the bootloader password) are written and checked
   by the scanner, not booted into.

@@ -115,29 +115,36 @@ Se ejecuta en cada pull request, en cada push a `main`, semanalmente y a demanda
 
 ## 7. Resultados
 
-De la [ejecución 37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201) en `main`
-(2026-10-05), la primera en verde; `docs/example-report.html` es su informe. OpenSCAP 1.3.9 (el paquete
+De la [ejecución 37353023826](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826) (2026-10-05), el código final
+tras las correcciones de la revisión; `docs/example-report.html` es su informe. OpenSCAP 1.3.9 (el paquete
 `openscap-scanner` del runner), SCAP Security Guide v0.1.82, perfil `cis_level1_server` (408 reglas seleccionadas).
 
 | | Antes | Después |
 |---|---|---|
-| Puntaje, todas las reglas | 64,5 % | **97,5 %** |
-| Puntaje, sin las excepciones documentadas | 66,3 % | **99,7 %** |
-| Cumplen / fallan | 222 / 122 | 346 / 9 |
+| Puntaje, todas las reglas | 64,5 % | **97,2 %** |
+| Puntaje, sin las excepciones documentadas | 66,3 % | **99,4 %** |
+| Cumplen / fallan | 222 / 122 | 345 / 10 |
 | No aplican / no verificadas / error | 64 / 0 / 0 | 53 / 0 / 0 |
 
-- **Corregidas**: 111 reglas pasaron de fallar a cumplir. **Regresiones**: 0. **Reglas declaradas que siguen
-  fallando**: 0 (92 controles CIS, 127 reglas declaradas).
-- **Siguen fallando (9)**: las 8 reglas de las excepciones documentadas (partición separada para `/tmp`, la variante
-  nftables de la sección de firewall, AIDE) y 1 punto abierto, `file_permission_user_init_files`: el rol deja cada
-  archivo oculto regular de los directorios personales en `0740` o menos, pero los directorios personales del runner
-  contienen enlaces simbólicos con nombre oculto (`.ghcup`), cuyo modo la verificación siempre lee como `0777`. Se
-  reporta; no se declara ni se oculta.
+- **Corregidas**: 110 reglas pasaron de fallar a cumplir. **Regresiones**: 0. **Reglas declaradas que siguen
+  fallando**: 0 (91 controles CIS, 126 reglas declaradas).
+- **Siguen fallando (10)**: las 8 reglas de las excepciones documentadas (partición separada para `/tmp`, la variante
+  nftables de la sección de firewall, AIDE) y 2 puntos abiertos, que se reportan; no se declaran ni se ocultan:
+  - `file_permission_user_init_files`: el rol deja cada archivo oculto regular de los directorios personales en
+    `0740` o menos, pero los directorios personales del runner contienen enlaces simbólicos con nombre oculto
+    (`.ghcup`), cuyo modo la verificación siempre lee como `0777`.
+  - `no_files_unowned_by_user`: los únicos archivos sin propietario están dentro de las capas de imagen de Docker
+    (`/var/lib/docker/overlay2`), cuyos UID solo existen dentro de los contenedores. El rol deja a propósito el
+    almacenamiento de contenedores sin tocar — asignar esos archivos a root rompe los contenedores en un equipo real.
+- **La primera ejecución en verde**, [37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201), obtuvo 97,5 % (99,7 % sin
+  excepciones) con solo el primer punto abierto: entonces el rol asignaba a root todos los archivos sin propietario,
+  incluidas las capas de imagen de Docker. La revisión final lo señaló como inseguro en un servidor real; la caída de
+  0,3 puntos es el precio de la corrección.
 - **También cambió la aplicabilidad** (no aplican 64 → 53): 15 reglas pasaron a aplicar y cumplen — 12 de calidad de
   contraseñas al instalar `libpam-pwquality` y 3 de `systemd-timesyncd` — y 4 reglas de chrony dejaron de aplicar al
   eliminar chrony.
-- **Idempotencia**: primera ejecución `ok=74 changed=57 failed=0`; segunda ejecución `ok=64 changed=0 failed=0`.
-- **Tiempo**: el trabajo `harden` tarda unos 15 minutos (dos escaneos, dos ejecuciones del playbook); el pipeline
+- **Idempotencia**: primera ejecución `ok=77 changed=55 failed=0`; segunda ejecución `ok=68 changed=0 failed=0`.
+- **Tiempo**: el trabajo `harden` tarda entre 12 y 16 minutos (dos escaneos, dos ejecuciones del playbook); el pipeline
   completo, más o menos lo mismo, porque los demás trabajos corren en paralelo.
 
 **Cómo se llegó ahí.** El primer ciclo completo
@@ -198,8 +205,8 @@ verificaciones del propio escáner en el archivo de resultados; las correcciones
 ## 9. Límites
 
 - El objetivo es un runner alojado por GitHub, no un servidor de producción; tres controles son excepciones porque el
-  runner ya está arrancado y es efímero, y una regla queda abierta por los propios enlaces simbólicos con nombre
-  oculto del runner.
+  runner ya está arrancado y es efímero, y dos reglas quedan abiertas por la imagen del runner (enlaces simbólicos con
+  nombre oculto; capas de imagen de Docker).
 - El puntaje viene del perfil de ComplianceAsCode, que sigue a CIS pero no es CIS-CAT ni una certificación.
 - Los ajustes que requieren reiniciar (AppArmor en la línea de comandos del kernel, la contraseña del cargador de
   arranque) se escriben y el escáner los verifica, pero no se arranca con ellos.
