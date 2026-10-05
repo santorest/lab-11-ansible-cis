@@ -16,7 +16,7 @@ cis_access_sshd:
   MaxSessions: "10"
   MaxStartups: "10:30:60"
   PermitEmptyPasswords: "no"
-  PermitRootLogin: "no"
+  PermitRootLogin: "yes"
   PermitUserEnvironment: "no"
   UsePAM: "yes"
 cis_access_ssh_allow_groups: [sudo]
