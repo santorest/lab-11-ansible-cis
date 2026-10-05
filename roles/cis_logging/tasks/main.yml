@@ -34,8 +34,10 @@
   when: "'6.1.4.1' not in (cis_exception_ids | default([]))"
   tags: [cis_6_1_4_1, cis_logging, molecule-notest]
 
-- name: 6.1.4.1 | log files owned by someone other than root, syslog or a service account (find)
-  ansible.builtin.command: find /var/log -type f ! -user root ! -user syslog
+# Service accounts (UID < 1000) keep the logs they write (postgres, www-data...); files of regular users or of no
+# known user are given to root.
+- name: 6.1.4.1 | log files owned by a regular user or by no known user (find)
+  ansible.builtin.command: find /var/log -type f ( -uid +999 ! -user nobody -o -nouser )
   register: cis_logging_foreign_logs
   changed_when: false
   when: "'6.1.4.1' not in (cis_exception_ids | default([]))"

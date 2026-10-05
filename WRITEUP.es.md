@@ -48,8 +48,8 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
   Si la versión cambia o desaparece, la ejecución se detiene; el escáner nunca se reemplaza en silencio.
 - **Lo que se declara sale de la línea base real.** `policy/controls.yml` asocia cada id de CIS con su rol y con las
   reglas del escáner que lo verifican. Se construyó a partir del primer escaneo de un runner por defecto: cada regla
-  que falló y que un rol corrige, más las reglas que solo aplican cuando un rol instala su paquete — 92 controles,
-  127 reglas. Si alguna sigue fallando después del endurecimiento, CI falla.
+  que falló y que un rol corrige, más las reglas que solo aplican cuando un rol instala su paquete — 91 controles,
+  126 reglas. Si alguna sigue fallando después del endurecimiento, CI falla.
 - **Excepciones como datos.** Un control omitido es una entrada con el id de CIS, sus reglas, un motivo y un rol
   responsable. Las tareas lo omiten, el informe lo lista y muestra el puntaje con y sin él, y una excepción para una
   regla que los roles también declaran, sin motivo o para una regla que el perfil no tiene es un error de
@@ -77,8 +77,9 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
 - **Compuerta** (código 1): el puntaje sin excepciones por debajo del 90 %, cualquier regla declarada que falle,
   cualquier regresión (aunque el puntaje total haya subido) o una segunda ejecución con `changed > 0` o `failed > 0`.
 - **Errores, no puntajes** (código 2): un escaneo ausente, vacío o truncado, un perfil que no seleccionó reglas,
-  resultados que son todos `error` o `notchecked`, o un resumen de Ansible ausente. Un escaneo que no ocurrió nunca
-  debe leerse como 100 % ni como 0 %.
+  ninguna regla que cumpla o falle, más del 5 % de las reglas seleccionadas en `error` o `notchecked`, o un resumen
+  de Ansible ausente. Un escaneo que no ocurrió nunca debe leerse como 100 % ni como 0 %. Una regla declarada que
+  termina en `error` o `notchecked` cuenta como que sigue fallando.
 
 ## 5. Roles
 
@@ -92,7 +93,7 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
 | `cis_logging` | 6.1 | journald reenvía a rsyslog, permisos y propietarios en `/var/log` |
 | `cis_maintenance` | 7.1–7.2 | permisos de archivos de cuentas, archivos escribibles por todos, archivos sin propietario, archivos ocultos de usuario, contraseñas vacías |
 
-**Excepciones** (en `group_vars/all.yml`):
+**Excepciones** (en `inventory/group_vars/all.yml`):
 
 | CIS | Reglas | Motivo |
 |---|---|---|
@@ -106,7 +107,7 @@ propósito y por qué. Y un playbook que reporta cambios en cada ejecución esco
 |---|---|
 | `lint` | yamllint, ansible-lint (perfil production), ruff, mypy (estricto), shellcheck |
 | `unit` | `cisreport` sobre datos de prueba: análisis, escaneos vacíos o que no coinciden, excepciones, regresiones, reglas declaradas que fallan, análisis del resumen de Ansible, límites del umbral, escape en el informe; cobertura mínima 90 % |
-| `molecule` | cada rol en un contenedor Ubuntu 24.04: converge, idempotencia, verificación (las tareas de kernel, cargador de arranque y firewall se etiquetan para ejecutarse solo en la VM) |
+| `molecule` | cada rol en un contenedor Ubuntu 24.04: converge, idempotencia, verificación (las tareas que necesitan un kernel, cargador de arranque, firewall, servicios en ejecución o un sistema de archivos completo se etiquetan para ejecutarse solo en la VM) |
 | `harden` | el ciclo completo en la VM del runner; artefactos: escaneos, informe, registros del playbook; un resumen en Markdown del trabajo |
 | `secrets` | gitleaks sobre todo el historial |
 
@@ -187,6 +188,12 @@ verificaciones del propio escáner en el archivo de resultados; las correcciones
 - **Los bucles por elemento no escalan a una imagen real.** El runner tiene más de 15.000 archivos escribibles por
   todos en sus cadenas de herramientas; una llamada a un módulo de Ansible por archivo tardó 54 minutos y agotó el
   tiempo del trabajo. Un `find … -exec … {} +` por regla hace lo mismo en segundos y sigue reportando si cambió algo.
+- **Un archivo de configuración en la carpeta equivocada se ignora en silencio.** Las excepciones y los ajustes
+  estaban en una carpeta `group_vars/` en la raíz del repositorio, donde `cisreport` los leía pero Ansible no busca;
+  el playbook se ejecutó con los valores por defecto de los roles. Cambió poco — las tareas exceptuadas también
+  estaban desactivadas por defecto y solo difería la lista `AllowGroups` de SSH — y salió a la luz solo cuando la
+  revisión final agregó una verificación contra el bloqueo de SSH. El archivo ahora está junto al inventario, y CI
+  falla si el playbook no ve las excepciones.
 
 ## 9. Límites
 
@@ -196,6 +203,9 @@ verificaciones del propio escáner en el archivo de resultados; las correcciones
 - El puntaje viene del perfil de ComplianceAsCode, que sigue a CIS pero no es CIS-CAT ni una certificación.
 - Los ajustes que requieren reiniciar (AppArmor en la línea de comandos del kernel, la contraseña del cargador de
   arranque) se escriben y el escáner los verifica, pero no se arranca con ellos.
+- En un servidor real, algunas decisiones son de su responsable (servicios que se conservan, puertos de salida, el
+  hash de la contraseña del cargador de arranque, cuentas con contraseñas antiguas); el README las enumera junto con
+  las protecciones que aplican los roles.
 - No cubre: nivel 2, Windows Server, CIS-CAT Pro, administración de flotas.
 
 ## 10. Reproducirlo

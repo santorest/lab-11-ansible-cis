@@ -21,6 +21,8 @@ cis_access_sshd:
   UsePAM: "yes"
 cis_access_ssh_allow_groups: [sudo]
 cis_access_su_group: sugroup
+# The account the play connects as (before become); checked against AllowGroups and PermitRootLogin
+cis_access_admin_user: "{{ ansible_user | default(lookup('env', 'SUDO_USER') or lookup('env', 'USER')) }}"
 # Values of the pinned profile (SSG v0.1.82, cis_level1_server); a key with no value is a flag
 cis_access_pwquality:
   minlen: 14

@@ -1,4 +1,7 @@
 cis_initial_setup_fs_modules: [cramfs, freevxfs, hfs, hfsplus, jffs2, usb-storage]
 cis_initial_setup_grub_cmdline: "apparmor=1 security=apparmor"
 cis_initial_setup_grub_superuser: grubadmin
+# A grub-mkpasswd-pbkdf2 hash (keep it in Ansible Vault). Empty: a random password is generated on the host and not
+# kept anywhere, so editing boot entries then needs rescue media; normal boot is not affected (--unrestricted).
+cis_initial_setup_grub_password_hash: ""
 cis_initial_setup_banner_text: "Authorized users only. All activity may be monitored and reported."

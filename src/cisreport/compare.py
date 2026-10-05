@@ -9,6 +9,9 @@ from cisreport.config import CisException, Control, full_id
 from cisreport.score import Counts, count
 from cisreport.xccdf import RuleResult
 
+# after results that count as "no longer passing" for a regression
+NOT_PASSING = ("fail", "error", "notchecked", "unknown")
+
 
 @dataclass(frozen=True)
 class Comparison:
@@ -39,7 +42,7 @@ def compare(
     keys = sorted(set(before) | set(after))
     fixed = tuple(k for k in keys if _result(before, k) == "fail" and _result(after, k) == "pass")
     failing = tuple(k for k in keys if _result(after, k) == "fail")
-    regressions = tuple(k for k in keys if _result(before, k) == "pass" and _result(after, k) in ("fail", "error"))
+    regressions = tuple(k for k in keys if _result(before, k) == "pass" and _result(after, k) in NOT_PASSING)
     return Comparison(
         before=count(before),
         after=count(after),
@@ -48,7 +51,8 @@ def compare(
         fixed=fixed,
         still_failing=failing,
         regressions=regressions,
-        claimed_failing=tuple(k for k in failing if k in claimed),
+        # a claimed rule must pass (or no longer apply): error, notchecked or unknown is not a fix
+        claimed_failing=tuple(k for k in keys if k in claimed and _result(after, k) not in ("pass", "notapplicable")),
         excepted_failing=tuple(k for k in failing if k in excepted),
         open_failing=tuple(k for k in failing if k not in claimed and k not in excepted),
     )

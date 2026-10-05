@@ -8,6 +8,9 @@ from xml.etree.ElementTree import ParseError
 import defusedxml.ElementTree as ET
 
 NS = "{http://checklists.nist.gov/xccdf/1.2}"
+UNCHECKED = ("error", "notchecked", "unknown")
+# A scan where more than this share of the selected rules was not evaluated did not really happen.
+MAX_UNCHECKED = 0.05
 RESULTS = ("pass", "fail", "notapplicable", "notchecked", "error", "unknown", "informational", "fixed")
 
 
@@ -23,7 +26,7 @@ class RuleResult:
     severity: str
 
 
-def parse_results(xml: bytes, profile: str) -> dict[str, RuleResult]:
+def parse_results(xml: bytes, profile: str, max_unchecked: float = MAX_UNCHECKED) -> dict[str, RuleResult]:
     try:
         root = ET.fromstring(xml)
     except (ParseError, ValueError) as exc:
@@ -51,4 +54,10 @@ def parse_results(xml: bytes, profile: str) -> dict[str, RuleResult]:
         out[rule_id] = RuleResult(rule_id, result, title, severity or "unknown")
     if not out:
         raise ScanError("no rule was selected: the profile matched nothing")
+    results = [r.result for r in out.values()]
+    if not any(r in ("pass", "fail") for r in results):
+        raise ScanError("no rule passed or failed: the scan evaluated nothing")
+    unchecked = sum(r in UNCHECKED for r in results)
+    if unchecked > max_unchecked * len(results):
+        raise ScanError(f"the scan did not evaluate {unchecked} of {len(results)} selected rules (error/notchecked)")
     return out

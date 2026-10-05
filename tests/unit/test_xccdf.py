@@ -33,3 +33,22 @@ def test_profile_mismatch_is_an_error(before: bytes):
 def test_not_a_result_file(xml: bytes):
     with pytest.raises(ScanError):
         parse_results(xml, PROFILE)
+
+
+def test_scan_with_no_pass_or_fail_is_an_error(before: bytes):
+    broken = before
+    for res in (b"fail", b"pass"):
+        broken = broken.replace(b"<result>" + res + b"</result>", b"<result>error</result>")
+    with pytest.raises(ScanError, match="no rule passed or failed"):
+        parse_results(broken, PROFILE)
+
+
+def test_scan_with_too_many_unchecked_rules_is_an_error(after: bytes):
+    # one of the five selected rules in error: 20 % of the scan did not really run
+    broken = after.replace(
+        b'content_rule_sysctl_net_ipv4_ip_forward"><result>pass</result>',
+        b'content_rule_sysctl_net_ipv4_ip_forward"><result>error</result>',
+    )
+    with pytest.raises(ScanError, match="did not evaluate"):
+        parse_results(broken, PROFILE)
+    assert len(parse_results(broken, PROFILE, max_unchecked=0.25)) == 5

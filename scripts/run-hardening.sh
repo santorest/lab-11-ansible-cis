@@ -21,11 +21,14 @@ scan() {  # oscap exits 2 when rules fail: expected; any other code is an error
   sudo chown "$(id -u):$(id -g)" "out/$1.xml" "out/$1.html"
 }
 ansible-galaxy collection install -r requirements.yml -p .ansible/collections
+# The exceptions and tunables must reach the play, not only cisreport (Ansible reads group_vars next to the inventory)
+ansible-inventory --host localhost \
+  | python3 -c "import json, sys; sys.exit(0 if json.load(sys.stdin).get('cis_exceptions') else 'group_vars not loaded')"
 scan before
 ansible-playbook playbooks/harden.yml | tee out/first-run.log
 ansible-playbook playbooks/harden.yml | tee out/second-run.log
 scan after
-cisreport report --policy policy/policy.yml --controls policy/controls.yml --group-vars group_vars/all.yml \
+cisreport report --policy policy/policy.yml --controls policy/controls.yml --group-vars inventory/group_vars/all.yml \
   --before out/before.xml --after out/after.xml --second-run out/second-run.log --out-dir out \
   --meta "run=${GITHUB_RUN_ID:-local}"
 cisreport gate --results out/results.json

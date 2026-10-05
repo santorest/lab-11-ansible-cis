@@ -26,6 +26,10 @@ jobs:
       - run: ansible-galaxy collection install -r requirements.yml -p .ansible/collections
       - run: yamllint .
       - run: ansible-lint
+      - name: The play loads the exceptions and tunables (group_vars next to the inventory)
+        run: >-
+          ansible-inventory --host localhost
+          | python3 -c "import json, sys; sys.exit(0 if json.load(sys.stdin).get('cis_exceptions') else 'group_vars not loaded')"
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy

@@ -10,6 +10,27 @@
   loop: ["/etc/ssh/sshd_config.d", "/run/sshd"]
   tags: [cis_access]
 
+# Pre-flight against lockout: after the drop-in, root cannot log in over SSH and only AllowGroups members can
+- name: 5.1.x | groups of the admin account this play connects as
+  ansible.builtin.command: id -nG {{ cis_access_admin_user | quote }}
+  register: cis_access_admin_groups
+  changed_when: false
+  when: "'5.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_5_1, cis_access, molecule-notest]
+
+- name: 5.1.x | that admin keeps SSH access (not root, member of an allowed group)
+  ansible.builtin.assert:
+    that:
+      - cis_access_admin_user != 'root' or cis_access_sshd.PermitRootLogin != 'no'
+      - cis_access_admin_groups.stdout.split() | intersect(cis_access_ssh_allow_groups) | length > 0
+    fail_msg: >-
+      {{ cis_access_admin_user }} (groups: {{ cis_access_admin_groups.stdout }}) would lose SSH access: allowed groups
+      are {{ cis_access_ssh_allow_groups | join(', ') }} and PermitRootLogin is {{ cis_access_sshd.PermitRootLogin }}.
+      Set cis_access_admin_user or cis_access_ssh_allow_groups before hardening.
+    quiet: true
+  when: "'5.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_5_1, cis_access, molecule-notest]
+
 - name: 5.1.x | sshd settings in a drop-in that sshd reads first (first value wins)
   ansible.builtin.template:
     src: 00-cis.conf.j2
@@ -141,11 +162,15 @@
   when: "'5.4.1.5' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_1_5, cis_access]
 
-- name: 5.4.1.1 | accounts with a password (find those above the maximum age)
+# Accounts whose password is already older than the maximum would expire at once (breaking service accounts and
+# sudo for automation): they are listed for their owners, not changed.
+- name: 5.4.1.1 | accounts with a password above the maximum age (find; "late" ones would expire at once)
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      awk -F: '$2 !~ /^[!*]/ && $2 != "" && ($5 == "" || $5 > {{ cis_access_pass_max_days }}) {print $1}' /etc/shadow
+      awk -F: -v max={{ cis_access_pass_max_days }} -v today=$(( $(date +%s) / 86400 )) \
+        '$2 !~ /^[!*]/ && $2 != "" && ($5 == "" || $5 > max) {print ($3 != "" && $3 + max < today ? "late " : "ok ") $1}' \
+        /etc/shadow
     executable: /bin/bash
   register: cis_access_long_lived
   changed_when: false
@@ -153,10 +178,19 @@
   tags: [cis_5_4_1_1, cis_access]
 
 - name: 5.4.1.1 | existing passwords expire within the maximum age
-  ansible.builtin.command: chage --maxdays {{ cis_access_pass_max_days }} {{ item }}
-  loop: "{{ cis_access_long_lived.stdout_lines | default([]) }}"
+  ansible.builtin.command: chage --maxdays {{ cis_access_pass_max_days }} {{ item.split()[1] | quote }}
+  loop: "{{ cis_access_long_lived.stdout_lines | default([]) | select('match', '^ok ') | list }}"
   changed_when: true
   when: "'5.4.1.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_5_4_1_1, cis_access]
+
+- name: 5.4.1.1 | accounts left for their owners (password older than the maximum age)
+  ansible.builtin.debug:
+    msg: "Not changed, would expire at once: {{ cis_access_long_lived.stdout_lines | select('match', '^late ')
+          | map('regex_replace', '^late ', '') | join(', ') }}"
+  when:
+    - "'5.4.1.1' not in (cis_exception_ids | default([]))"
+    - cis_access_long_lived.stdout_lines | default([]) | select('match', '^late ') | list | length > 0
   tags: [cis_5_4_1_1, cis_access]
 
 - name: 5.4.2.7 | system accounts with a login shell (find)

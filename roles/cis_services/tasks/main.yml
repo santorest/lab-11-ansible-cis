@@ -1,8 +1,32 @@
+- name: 2.1.x | services that are running (to protect the ones this host needs)
+  ansible.builtin.service_facts:
+  when: "'2.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_2_1, cis_services]
+
+- name: 2.1.x | no listed server package is removed while its service runs, unless the host owner opted in
+  ansible.builtin.assert:
+    that: cis_services_remove_active_services or (cis_services_running_listed | length == 0)
+    fail_msg: >-
+      These services run on this host and would be removed: {{ cis_services_running_listed | join(', ') }}.
+      Take their packages out of cis_services_server_packages if the host needs them, or set
+      cis_services_remove_active_services: true to remove them.
+    quiet: true
+  vars:
+    cis_services_running_listed: >-
+      {{ cis_services_server_units | dict2items
+         | selectattr('key', 'in', cis_services_server_packages)
+         | selectattr('value', 'in', ansible_facts.services | dict2items
+                                      | selectattr('value.state', 'equalto', 'running')
+                                      | map(attribute='key') | list)
+         | map(attribute='key') | list }}
+  when: "'2.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_2_1, cis_services]
+
+# Packages are removed, not purged: their configuration stays in /etc in case one is needed again
 - name: 2.1.x | Server services that are not needed are removed
   ansible.builtin.apt:
     name: "{{ cis_services_server_packages }}"
     state: absent
-    purge: true
   when: "'2.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_1, cis_services]
 
@@ -10,7 +34,6 @@
   ansible.builtin.apt:
     name: "{{ cis_services_client_packages }}"
     state: absent
-    purge: true
   when: "'2.2' not in (cis_exception_ids | default([]))"
   tags: [cis_2_2, cis_services]
 
@@ -18,7 +41,6 @@
   ansible.builtin.apt:
     name: chrony
     state: absent
-    purge: true
   when: "'2.3.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_3_1_1, cis_services]
 

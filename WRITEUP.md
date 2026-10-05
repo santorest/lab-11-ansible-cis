@@ -47,7 +47,7 @@ reports changes on every run hides real drift in noise.
   release changes or disappears, the run stops; the scanner is never swapped silently.
 - **Claims from the real baseline.** `policy/controls.yml` maps each CIS id to its role and to the scanner rules that
   check it. It was built from the first baseline scan of a default runner: every rule that failed and that a role
-  fixes, plus the rules that only apply once a role installs their package — 92 controls, 127 rules. If any of them
+  fixes, plus the rules that only apply once a role installs their package — 91 controls, 126 rules. If any of them
   still fails after hardening, CI fails.
 - **Exceptions as data.** A skipped control is an entry with the CIS id, its rules, a reason and an owner role. Tasks
   skip it, the report lists it and shows the score with and without it, and an exception for a rule the roles also
@@ -72,8 +72,10 @@ reports changes on every run hides real drift in noise.
   claimed rules that still fail; failing rules that are neither claimed nor excepted.
 - **Gate** (exit 1): the score excluding exceptions below 90 %, any claimed rule failing, any regression (even when
   the overall score rose), or a second run with `changed > 0` or `failed > 0`.
-- **Errors, not scores** (exit 2): a missing, empty or truncated scan, a profile that selected no rules, results that
-  are all `error` or `notchecked`, or a missing recap. A scan that did not happen must never read as 100 % or 0 %.
+- **Errors, not scores** (exit 2): a missing, empty or truncated scan, a profile that selected no rules, no rule that
+  passed or failed, more than 5 % of the selected rules in `error` or `notchecked`, or a missing recap. A scan that
+  did not happen must never read as 100 % or 0 %. A claimed rule that ends in `error` or `notchecked` counts as
+  still failing.
 
 ## 5. Roles
 
@@ -87,7 +89,7 @@ reports changes on every run hides real drift in noise.
 | `cis_logging` | 6.1 | journald forwards to rsyslog, `/var/log` permissions and ownership |
 | `cis_maintenance` | 7.1–7.2 | account file permissions, world-writable files, unowned files, user dot files, empty passwords |
 
-**Exceptions** (in `group_vars/all.yml`):
+**Exceptions** (in `inventory/group_vars/all.yml`):
 
 | CIS | Rules | Reason |
 |---|---|---|
@@ -101,7 +103,7 @@ reports changes on every run hides real drift in noise.
 |---|---|
 | `lint` | yamllint, ansible-lint (production profile), ruff, mypy (strict), shellcheck |
 | `unit` | `cisreport` on fixtures: parsing, empty and mismatched scans, exceptions, regressions, claimed failing, recap parsing, threshold edges, report escaping; coverage gate 90 % |
-| `molecule` | each role in an Ubuntu 24.04 container: converge, idempotence, verify (kernel, bootloader and firewall tasks are tagged to run only on the VM) |
+| `molecule` | each role in an Ubuntu 24.04 container: converge, idempotence, verify (tasks that need a real kernel, bootloader, firewall, running services or a whole filesystem are tagged to run only on the VM) |
 | `harden` | the whole cycle on the runner VM; artifacts: scans, report, playbook logs; a Markdown job summary |
 | `secrets` | gitleaks over the full history |
 
@@ -176,6 +178,11 @@ the results file, and the fixes are in section 8.
 - **Per-item loops do not scale to a real image.** The runner has more than 15,000 world-writable files under its
   toolchains; one Ansible module call per file ran for 54 minutes and hit the job timeout. One `find … -exec … {} +`
   per rule does the same work in seconds and still reports whether anything changed.
+- **A configuration file in the wrong folder is silently ignored.** The exceptions and tunables lived in a
+  `group_vars/` folder at the repository root, where `cisreport` read them but Ansible does not look; the play ran
+  on the role defaults. It changed little — the excepted tasks were also off by default, and only the SSH
+  `AllowGroups` list differed — and it surfaced only when the final review added an SSH lockout check. The file now
+  sits next to the inventory, and CI fails if the play cannot see the exceptions.
 
 ## 9. Limits
 
@@ -184,6 +191,8 @@ the results file, and the fixes are in section 8.
 - The score comes from the ComplianceAsCode profile, which follows CIS but is not CIS-CAT and not a certification.
 - Settings that need a reboot (AppArmor on the kernel command line, the bootloader password) are written and checked
   by the scanner, not booted into.
+- On a real server, some decisions stay with its owner (services to keep, outbound ports, the bootloader password
+  hash, accounts with old passwords); the README lists them and the guards the roles apply.
 - Not covered: Level 2, Windows Server, CIS-CAT Pro, fleet management.
 
 ## 10. Reproduce it
