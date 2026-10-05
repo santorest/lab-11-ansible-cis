@@ -19,6 +19,32 @@
   when: "'3.3' not in (cis_exception_ids | default([]))"
   tags: [cis_3_3, cis_network, molecule-notest]
 
+# ufw applies /etc/ufw/sysctl.conf when it is enabled or reloaded (log_martians=0 there), and Ubuntu's
+# /etc/sysctl.d/10-network-security.conf sets rp_filter=2; the profile checks every file, so they must agree.
+- name: 3.3.x | other sysctl files that set network keys (find)
+  ansible.builtin.find:
+    paths: [/etc, /etc/sysctl.d, /etc/ufw]
+    patterns: ["sysctl.conf", "*.conf"]
+    contains: '^\s*net[./]'
+    excludes: ["60-cis-network.conf"]
+  register: cis_network_other_sysctl
+  when: "'3.3' not in (cis_exception_ids | default([]))"
+  tags: [cis_3_3, cis_network, molecule-notest]
+
+- name: 3.3.x | those files set the same values
+  ansible.builtin.replace:
+    path: "{{ item.0 }}"
+    regexp: "^(\\s*{{ cis_network_key_re }}\\s*=\\s*)(?!{{ item.1.value }}\\s*$).*$"
+    replace: "\\g<1>{{ item.1.value }}"
+  vars:
+    cis_network_key_re: "{{ item.1.key.split('.') | join('[./]') }}"
+  loop: "{{ cis_network_other_sysctl.files | default([]) | map(attribute='path') | list
+            | product(cis_network_sysctl | dict2items) | list }}"
+  loop_control:
+    label: "{{ item.0 }} {{ item.1.key }}"
+  when: "'3.3' not in (cis_exception_ids | default([]))"
+  tags: [cis_3_3, cis_network, molecule-notest]
+
 - name: 3.2.x | Uncommon network protocols are not available
   ansible.builtin.copy:
     dest: "/etc/modprobe.d/cis-{{ item }}.conf"

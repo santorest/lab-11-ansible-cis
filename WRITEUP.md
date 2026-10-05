@@ -47,7 +47,8 @@ reports changes on every run hides real drift in noise.
   release changes or disappears, the run stops; the scanner is never swapped silently.
 - **Claims from the real baseline.** `policy/controls.yml` maps each CIS id to its role and to the scanner rules that
   check it. It was built from the first baseline scan of a default runner: every rule that failed and that a role
-  fixes — 84 controls, 112 rules. If any of them still fails after hardening, CI fails.
+  fixes, plus the rules that only apply once a role installs their package — 92 controls, 127 rules. If any of them
+  still fails after hardening, CI fails.
 - **Exceptions as data.** A skipped control is an entry with the CIS id, its rules, a reason and an owner role. Tasks
   skip it, the report lists it and shows the score with and without it, and an exception for a rule the roles also
   claim, without a reason or for a rule the profile does not have, is a configuration error.

@@ -7,7 +7,7 @@
     mode: "0755"
   # /run/sshd: sshd -t refuses to validate without it, and it is missing while sshd has not run
   # (socket-activated on the runner, never started in the Molecule container)
-  loop: ["/etc/ssh/sshd_config.d", "/etc/security/pwquality.conf.d", "/run/sshd"]
+  loop: ["/etc/ssh/sshd_config.d", "/run/sshd"]
   tags: [cis_access]
 
 - name: 5.1.x | sshd settings in a drop-in that sshd reads first (first value wins)
@@ -74,20 +74,24 @@
   when: "'5.3.1.3' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_1, cis_access]
 
+# In pwquality.conf itself: the profile's checks read that file only, not pwquality.conf.d
 - name: 5.3.3.2.x | password quality settings
-  ansible.builtin.copy:
-    dest: /etc/security/pwquality.conf.d/60-cis.conf
-    content: "minlen = 14\ndifok = 2\nmaxrepeat = 3\nmaxsequence = 3\ndictcheck = 1\nenforcing = 1\nenforce_for_root\n"
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: '^\s*#?\s*{{ item.key }}\b'
+    line: "{{ item.key }}{{ '' if item.value is none else ' = ' ~ item.value }}"
+    create: true
     owner: root
     group: root
     mode: "0644"
+  loop: "{{ cis_access_pwquality | dict2items }}"
   when: "'5.3.3.2' not in (cis_exception_ids | default([]))"
   tags: [cis_5_3_3_2, cis_access]
 
 - name: 5.3.3.1.x | account lockout settings (faillock)
   ansible.builtin.copy:
     dest: /etc/security/faillock.conf
-    content: "deny = 5\nunlock_time = 900\neven_deny_root\nroot_unlock_time = 60\n"
+    content: "deny = 4\nunlock_time = 900\neven_deny_root\nroot_unlock_time = 60\n"
     owner: root
     group: root
     mode: "0644"
@@ -174,10 +178,23 @@
   when: "'5.4.2.7' not in (cis_exception_ids | default([]))"
   tags: [cis_5_4_2_7, cis_access]
 
+# The runner image ships /usr/local/bin as 1777; root's PATH must not contain group- or world-writable directories
+- name: 5.4.2.5 | directories in root's PATH are not writable by group or others
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail;
+      find {{ cis_access_sudo_secure_path.split(':') | map('quote') | join(' ') }} -maxdepth 0 -type d -perm /022
+      -print -exec chmod go-w {} + | wc -l
+    executable: /bin/bash
+  register: cis_access_root_path_dirs
+  changed_when: cis_access_root_path_dirs.stdout | int > 0
+  when: "'5.4.2.5' not in (cis_exception_ids | default([]))"
+  tags: [cis_5_4_2_5, cis_access]
+
 - name: 5.4.3.2 | interactive shells time out
   ansible.builtin.copy:
     dest: /etc/profile.d/60-cis-tmout.sh
-    content: "readonly TMOUT={{ cis_access_shell_timeout }}\nexport TMOUT\n"
+    content: "TMOUT={{ cis_access_shell_timeout }}\nreadonly TMOUT\nexport TMOUT\n"
     owner: root
     group: root
     mode: "0644"

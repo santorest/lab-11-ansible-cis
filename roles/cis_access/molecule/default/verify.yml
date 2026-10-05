@@ -21,11 +21,11 @@
         that:
           - >-
             'Defaults use_pty' in (cis_access_check_1.content | b64decode)
-    - name: Read /etc/security/pwquality.conf.d/60-cis.conf
+    - name: Read /etc/security/pwquality.conf
       ansible.builtin.slurp:
-        src: /etc/security/pwquality.conf.d/60-cis.conf
+        src: /etc/security/pwquality.conf
       register: cis_access_check_2
-    - name: /etc/security/pwquality.conf.d/60-cis.conf contains the expected setting
+    - name: /etc/security/pwquality.conf contains the expected setting
       ansible.builtin.assert:
         that:
           - >-

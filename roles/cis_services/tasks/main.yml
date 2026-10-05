@@ -29,11 +29,35 @@
   when: "'2.3.1.1' not in (cis_exception_ids | default([]))"
   tags: [cis_2_3_1_1, cis_services]
 
+- name: 2.3.2.1 | the timesyncd drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/timesyncd.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: "'2.3.2.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_2_3_2_1, cis_services]
+
+- name: 2.3.2.1 | systemd-timesyncd uses the authorized time servers
+  ansible.builtin.copy:
+    dest: /etc/systemd/timesyncd.conf.d/60-cis.conf
+    content: |
+      [Time]
+      NTP={{ cis_services_time_servers[:2] | join(' ') }}
+      FallbackNTP={{ cis_services_time_servers[2:] | join(' ') }}
+    owner: root
+    group: root
+    mode: "0644"
+  register: cis_services_timesyncd_conf
+  when: "'2.3.2.1' not in (cis_exception_ids | default([]))"
+  tags: [cis_2_3_2_1, cis_services]
+
 - name: 2.3.2.x | systemd-timesyncd is enabled and running
   ansible.builtin.systemd_service:
     name: systemd-timesyncd
     enabled: true
-    state: started
+    state: "{{ 'restarted' if cis_services_timesyncd_conf is changed else 'started' }}"
   when: "'2.3.2' not in (cis_exception_ids | default([]))"
   tags: [cis_2_3_2, cis_services, molecule-notest]
 
@@ -55,11 +79,13 @@
 
 - name: 2.4.1.8 / 2.4.2.1 | cron and at are restricted to authorized users
   ansible.builtin.copy:
-    dest: "{{ item }}"
+    dest: "{{ item.path }}"
     content: "root\n"
     owner: root
-    group: root
+    group: "{{ item.group }}"
     mode: "0640"
-  loop: [/etc/cron.allow, /etc/at.allow]
+  loop:
+    - {path: /etc/cron.allow, group: crontab}
+    - {path: /etc/at.allow, group: root}
   when: "'2.4.1.8' not in (cis_exception_ids | default([]))"
   tags: [cis_2_4_1_8, cis_services]

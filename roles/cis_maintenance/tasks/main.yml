@@ -49,18 +49,16 @@
   when: "'7.1.12' not in (cis_exception_ids | default([]))"
   tags: [cis_7_1_12, cis_maintenance, molecule-notest]
 
-- name: 7.2.10 | user dot files writable by group or others (find)
-  ansible.builtin.command: find /root /home -maxdepth 2 -name ".*" -type f -perm /go+w
+# Regular files only: a symlink's own mode cannot be changed (see the open item in docs/controls.md)
+- name: 7.2.10 | user dot files have mode 0740 or less
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail;
+      find /root /home -mindepth 1 -maxdepth 2 -name ".*" -type f -perm /7037 -print -exec chmod u-s,g-wxs,o-rwx,-t {} +
+      | wc -l
+    executable: /bin/bash
   register: cis_maintenance_dotfiles
-  changed_when: false
-  when: "'7.2.10' not in (cis_exception_ids | default([]))"
-  tags: [cis_7_2_10, cis_maintenance]
-
-- name: 7.2.10 | user dot files are not writable by group or others
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: "go-w"
-  loop: "{{ cis_maintenance_dotfiles.stdout_lines | default([]) }}"
+  changed_when: cis_maintenance_dotfiles.stdout | int > 0
   when: "'7.2.10' not in (cis_exception_ids | default([]))"
   tags: [cis_7_2_10, cis_maintenance]
 

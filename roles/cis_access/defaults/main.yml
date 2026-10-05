@@ -21,6 +21,20 @@ cis_access_sshd:
   UsePAM: "yes"
 cis_access_ssh_allow_groups: [sudo]
 cis_access_su_group: sugroup
+# Values of the pinned profile (SSG v0.1.82, cis_level1_server); a key with no value is a flag
+cis_access_pwquality:
+  minlen: 14
+  minclass: 4
+  dcredit: -1
+  ucredit: -1
+  lcredit: -1
+  ocredit: -1
+  difok: 2
+  maxrepeat: 3
+  maxsequence: 3
+  dictcheck: 1
+  enforcing: 1
+  enforce_for_root:
 cis_access_sudo_secure_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 cis_access_pass_max_days: 365
 cis_access_pass_min_days: 1

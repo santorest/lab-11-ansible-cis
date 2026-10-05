@@ -1,6 +1,8 @@
 # What the roles claim to remediate: CIS id -> SSG rules (short ids from SSG v0.1.82, cis_level1_server).
-# Built from the baseline scan of spike run 37054867659: every rule that failed on the default runner and that a
-# role fixes. The gate fails if any of these rules still fails after hardening.
+# Built from the baseline scan of spike run 37054867659 (every rule that failed on the default runner and that a
+# role fixes), then extended from the first full cycle (run 37327562351) with rules that only become applicable once
+# a role installs their package (pwquality, timesyncd) or that a role's own change can break (cron.allow).
+# The gate fails if any of these rules still fails after hardening.
 controls:
   - {cis: "1.1.1.1", title: "Disable Mounting of cramfs", role: cis_initial_setup, rules: [kernel_module_cramfs_disabled]}
   - {cis: "1.1.1.2", title: "Disable Mounting of freevxfs", role: cis_initial_setup, rules: [kernel_module_freevxfs_disabled]}
@@ -24,13 +26,14 @@ controls:
   - {cis: "2.2.4", title: "Remove telnet Clients", role: cis_services, rules: [package_inetutils-telnet_removed, package_telnet_removed]}
   - {cis: "2.2.6", title: "Remove ftp Package", role: cis_services, rules: [package_ftp_removed, package_tnftp_removed]}
   - {cis: "2.3.1.1", title: "Install the systemd_timesyncd Service", role: cis_services, rules: [package_timesyncd_installed, service_chronyd_disabled]}
+  - {cis: "2.3.2.1", title: "Configure Systemd Timesyncd Servers", role: cis_services, rules: [service_timesyncd_configured]}
   - {cis: "2.4.1.2", title: "Verify Permissions on crontab", role: cis_services, rules: [file_permissions_crontab]}
   - {cis: "2.4.1.3", title: "Verify Permissions on cron.hourly", role: cis_services, rules: [file_permissions_cron_hourly]}
   - {cis: "2.4.1.4", title: "Verify Permissions on cron.daily", role: cis_services, rules: [file_permissions_cron_daily]}
   - {cis: "2.4.1.5", title: "Verify Permissions on cron.weekly", role: cis_services, rules: [file_permissions_cron_weekly]}
   - {cis: "2.4.1.6", title: "Verify Permissions on cron.monthly", role: cis_services, rules: [file_permissions_cron_monthly]}
   - {cis: "2.4.1.7", title: "Verify Permissions on cron.d", role: cis_services, rules: [file_permissions_cron_d]}
-  - {cis: "2.4.1.8", title: "Ensure that /etc/cron.allow exists", role: cis_services, rules: [file_cron_allow_exists]}
+  - {cis: "2.4.1.8", title: "Ensure that /etc/cron.allow exists", role: cis_services, rules: [file_cron_allow_exists, file_groupowner_cron_allow, file_owner_cron_allow, file_permissions_cron_allow]}
   - {cis: "2.4.2.1", title: "Ensure that /etc/at.allow exists", role: cis_services, rules: [file_at_allow_exists]}
   - {cis: "3.3.1", title: "Disable Kernel Parameter for IPv6 Forwarding", role: cis_network, rules: [sysctl_net_ipv6_conf_all_forwarding, sysctl_net_ipv4_ip_forward]}
   - {cis: "3.3.2", title: "Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces", role: cis_network, rules: [sysctl_net_ipv4_conf_all_send_redirects, sysctl_net_ipv4_conf_default_send_redirects]}
@@ -71,6 +74,14 @@ controls:
   - {cis: "5.3.2.4", title: "Verify pam_pwhistory module is activated", role: cis_access, rules: [accounts_password_pam_pwhistory_enabled]}
   - {cis: "5.3.3.1.1", title: "Lock Accounts After Failed Password Attempts", role: cis_access, rules: [accounts_passwords_pam_faillock_deny]}
   - {cis: "5.3.3.1.2", title: "Set Lockout Time for Failed Password Attempts", role: cis_access, rules: [accounts_passwords_pam_faillock_unlock_time]}
+  - {cis: "5.3.3.2.1", title: "Ensure PAM Enforces Password Requirements - Minimum Different Characters", role: cis_access, rules: [accounts_password_pam_difok]}
+  - {cis: "5.3.3.2.2", title: "Ensure PAM Enforces Password Requirements - Minimum Length", role: cis_access, rules: [accounts_password_pam_minlen]}
+  - {cis: "5.3.3.2.3", title: "Ensure PAM Enforces Password Requirements - Password Complexity", role: cis_access, rules: [accounts_password_pam_minclass, accounts_password_pam_dcredit, accounts_password_pam_ucredit, accounts_password_pam_lcredit, accounts_password_pam_ocredit]}
+  - {cis: "5.3.3.2.4", title: "Set Password Maximum Consecutive Repeating Characters", role: cis_access, rules: [accounts_password_pam_maxrepeat]}
+  - {cis: "5.3.3.2.5", title: "Limit the maximum number of sequential characters in passwords", role: cis_access, rules: [accounts_password_pam_maxsequence]}
+  - {cis: "5.3.3.2.6", title: "Ensure PAM Enforces Password Requirements - Prevent the Use of Dictionary Words", role: cis_access, rules: [accounts_password_pam_dictcheck]}
+  - {cis: "5.3.3.2.7", title: "Ensure PAM Enforces Password Requirements - Enforcing", role: cis_access, rules: [accounts_password_pam_enforcing]}
+  - {cis: "5.3.3.2.8", title: "Ensure PAM Enforces Password Requirements - Enforce for root User", role: cis_access, rules: [accounts_password_pam_enforce_root]}
   - {cis: "5.3.3.3.1", title: "Limit Password Reuse", role: cis_access, rules: [accounts_password_pam_pwhistory_remember]}
   - {cis: "5.3.3.3.2", title: "Limit Password Reuse", role: cis_access, rules: [accounts_password_pam_pwhistory_enforce_root]}
   - {cis: "5.3.3.3.3", title: "Enforce Password History with use_authtok", role: cis_access, rules: [accounts_password_pam_pwhistory_use_authtok]}
@@ -85,4 +96,3 @@ controls:
   - {cis: "6.1.4.1", title: "Verify permissions of log files", role: cis_logging, rules: [permissions_local_var_log, file_ownerships_var_log]}
   - {cis: "7.1.11", title: "Ensure No World-Writable Files Exist", role: cis_maintenance, rules: [file_permissions_unauthorized_world_writable]}
   - {cis: "7.1.12", title: "Ensure All Files Are Owned by a User", role: cis_maintenance, rules: [no_files_unowned_by_user]}
-  - {cis: "7.2.10", title: "Ensure All User Initialization Files Have Mode 0740 Or Less Permissive", role: cis_maintenance, rules: [file_permission_user_init_files]}

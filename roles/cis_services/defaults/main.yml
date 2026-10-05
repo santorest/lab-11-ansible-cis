@@ -3,3 +3,5 @@
 cis_services_server_packages: [rsync, apache2, nginx, avahi-daemon, isc-dhcp-server, bind9, dnsmasq, vsftpd, slapd, nfs-kernel-server,
                                ypserv, cups, samba, snmpd, tftpd-hpa, squid, xinetd]
 cis_services_client_packages: [telnet, inetutils-telnet, ftp, tnftp, nis, rsh-client, talk, ldap-utils]
+# The profile's authorized servers (var_multiple_time_servers, selector "ubuntu")
+cis_services_time_servers: [0.ubuntu.pool.ntp.org, 1.ubuntu.pool.ntp.org, 2.ubuntu.pool.ntp.org, 3.ubuntu.pool.ntp.org]
