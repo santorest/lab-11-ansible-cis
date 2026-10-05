@@ -5,7 +5,9 @@
     owner: root
     group: root
     mode: "0755"
-  loop: ["/etc/ssh/sshd_config.d", "/etc/security/pwquality.conf.d"]
+  # /run/sshd: sshd -t refuses to validate without it, and it is missing while sshd has not run
+  # (socket-activated on the runner, never started in the Molecule container)
+  loop: ["/etc/ssh/sshd_config.d", "/etc/security/pwquality.conf.d", "/run/sshd"]
   tags: [cis_access]
 
 - name: 5.1.x | sshd settings in a drop-in that sshd reads first (first value wins)

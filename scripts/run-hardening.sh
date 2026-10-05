@@ -11,6 +11,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq openscap-scanner unzi
 bash scripts/get-ssg.sh
 scan() {  # oscap exits 2 when rules fail: expected; any other code is an error
   local rc=0
+  # shellcheck disable=SC2024  # the redirect runs as the user on purpose: out/ is the user's, only oscap needs root
   sudo oscap xccdf eval --profile "$profile" --results-arf "out/$1.xml" --report "out/$1.html" "$ds" \
     > "out/$1.txt" || rc=$?
   if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then

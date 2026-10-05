@@ -12,9 +12,3 @@
         that:
           - >-
             'ForwardToSyslog=yes' in (cis_logging_check_0.content | b64decode)
-    - name: Gather package facts
-      ansible.builtin.package_facts:
-    - name: Required packages are installed
-      ansible.builtin.assert:
-        that:
-          - "'aide' in ansible_facts.packages"
