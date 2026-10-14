@@ -1,0 +1,1172 @@
+{
+  "jobs": [
+    {
+      "id": 111908332763,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGk2w",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908332763",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908332763",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:03:25Z",
+      "name": "unit",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run pip install -r requirements-dev.txt && pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:21Z"
+        },
+        {
+          "name": "Run pytest --cov=cisreport --cov-report=term-missing --cov-fail-under=90",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:21Z",
+          "completed_at": "2026-10-05T18:03:22Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-05T18:03:22Z",
+          "completed_at": "2026-10-05T18:03:22Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-05T18:03:22Z",
+          "completed_at": "2026-10-05T18:03:22Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:03:22Z",
+          "completed_at": "2026-10-05T18:03:22Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908332763",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001160,
+      "runner_name": "GitHub Actions 1000001160",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333150,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGmXg",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333150",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333150",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:03:11Z",
+      "name": "secrets",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:07Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "gitleaks (full history, pinned by digest)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333150",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001161,
+      "runner_name": "GitHub Actions 1000001161",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333243,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGmuw",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333243",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333243",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:06:05Z",
+      "name": "molecule-role (cis_network)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:07Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:17Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:17Z",
+          "completed_at": "2026-10-05T18:04:34Z"
+        },
+        {
+          "name": "molecule test (cis_network)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:34Z",
+          "completed_at": "2026-10-05T18:06:03Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:06:03Z",
+          "completed_at": "2026-10-05T18:06:03Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:06:03Z",
+          "completed_at": "2026-10-05T18:06:03Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:06:03Z",
+          "completed_at": "2026-10-05T18:06:03Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333243",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001162,
+      "runner_name": "GitHub Actions 1000001162",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333267,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGm0w",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333267",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333267",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:04:38Z",
+      "name": "lint",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Run pip install -r requirements-dev.txt -r requirements-ansible.txt && pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:23Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml -p .ansible/collections",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:23Z",
+          "completed_at": "2026-10-05T18:04:20Z"
+        },
+        {
+          "name": "Run yamllint .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:20Z",
+          "completed_at": "2026-10-05T18:04:20Z"
+        },
+        {
+          "name": "Run ansible-lint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-05T18:04:20Z",
+          "completed_at": "2026-10-05T18:04:32Z"
+        },
+        {
+          "name": "The play loads the exceptions and tunables (group_vars next to the inventory)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-05T18:04:32Z",
+          "completed_at": "2026-10-05T18:04:33Z"
+        },
+        {
+          "name": "Run ruff check .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-05T18:04:33Z",
+          "completed_at": "2026-10-05T18:04:33Z"
+        },
+        {
+          "name": "Run ruff format --check .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-05T18:04:33Z",
+          "completed_at": "2026-10-05T18:04:33Z"
+        },
+        {
+          "name": "Run mypy",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:04:33Z",
+          "completed_at": "2026-10-05T18:04:35Z"
+        },
+        {
+          "name": "Run shellcheck scripts/*.sh",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:04:35Z",
+          "completed_at": "2026-10-05T18:04:35Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-10-05T18:04:35Z",
+          "completed_at": "2026-10-05T18:04:35Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-10-05T18:04:35Z",
+          "completed_at": "2026-10-05T18:04:35Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-10-05T18:04:35Z",
+          "completed_at": "2026-10-05T18:04:35Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333267",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001164,
+      "runner_name": "GitHub Actions 1000001164",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333309,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGm_Q",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333309",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333309",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:06:38Z",
+      "name": "molecule-role (cis_initial_setup)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:07Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:16Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:16Z",
+          "completed_at": "2026-10-05T18:04:54Z"
+        },
+        {
+          "name": "molecule test (cis_initial_setup)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:54Z",
+          "completed_at": "2026-10-05T18:06:36Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:06:36Z",
+          "completed_at": "2026-10-05T18:06:36Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:06:36Z",
+          "completed_at": "2026-10-05T18:06:37Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:06:37Z",
+          "completed_at": "2026-10-05T18:06:37Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333309",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001163,
+      "runner_name": "GitHub Actions 1000001163",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333399,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGnVw",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333399",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333399",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:07Z",
+      "completed_at": "2026-10-05T18:05:50Z",
+      "name": "molecule-role (cis_logging)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:20Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:20Z",
+          "completed_at": "2026-10-05T18:04:28Z"
+        },
+        {
+          "name": "molecule test (cis_logging)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:28Z",
+          "completed_at": "2026-10-05T18:05:49Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:05:49Z",
+          "completed_at": "2026-10-05T18:05:49Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:05:49Z",
+          "completed_at": "2026-10-05T18:05:49Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:05:49Z",
+          "completed_at": "2026-10-05T18:05:49Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333399",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001166,
+      "runner_name": "GitHub Actions 1000001166",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333452,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGnjA",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333452",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333452",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:05:58Z",
+      "name": "molecule-role (cis_firewall)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:22Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:22Z",
+          "completed_at": "2026-10-05T18:04:26Z"
+        },
+        {
+          "name": "molecule test (cis_firewall)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:26Z",
+          "completed_at": "2026-10-05T18:05:55Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:05:55Z",
+          "completed_at": "2026-10-05T18:05:55Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:05:55Z",
+          "completed_at": "2026-10-05T18:05:55Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:05:55Z",
+          "completed_at": "2026-10-05T18:05:55Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333452",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001165,
+      "runner_name": "GitHub Actions 1000001165",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333466,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGnmg",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333466",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333466",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:07Z",
+      "completed_at": "2026-10-05T18:06:57Z",
+      "name": "molecule-role (cis_services)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:11Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:11Z",
+          "completed_at": "2026-10-05T18:03:22Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:22Z",
+          "completed_at": "2026-10-05T18:04:46Z"
+        },
+        {
+          "name": "molecule test (cis_services)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:46Z",
+          "completed_at": "2026-10-05T18:06:53Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:06:53Z",
+          "completed_at": "2026-10-05T18:06:53Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:06:53Z",
+          "completed_at": "2026-10-05T18:06:54Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:06:54Z",
+          "completed_at": "2026-10-05T18:06:54Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333466",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001167,
+      "runner_name": "GitHub Actions 1000001167",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333481,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGnqQ",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333481",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333481",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:07Z",
+      "completed_at": "2026-10-05T18:06:32Z",
+      "name": "molecule-role (cis_access)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:25Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:25Z",
+          "completed_at": "2026-10-05T18:04:17Z"
+        },
+        {
+          "name": "molecule test (cis_access)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:17Z",
+          "completed_at": "2026-10-05T18:06:30Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:06:30Z",
+          "completed_at": "2026-10-05T18:06:30Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:06:30Z",
+          "completed_at": "2026-10-05T18:06:30Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:06:30Z",
+          "completed_at": "2026-10-05T18:06:30Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333481",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001170,
+      "runner_name": "GitHub Actions 1000001170",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333496,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGnuA",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333496",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333496",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:07Z",
+      "completed_at": "2026-10-05T18:06:22Z",
+      "name": "molecule-role (cis_maintenance)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run pip install -r requirements-ansible.txt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:20Z"
+        },
+        {
+          "name": "Run ansible-galaxy collection install -r requirements.yml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:20Z",
+          "completed_at": "2026-10-05T18:04:39Z"
+        },
+        {
+          "name": "molecule test (cis_maintenance)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:04:39Z",
+          "completed_at": "2026-10-05T18:06:19Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-05T18:06:19Z",
+          "completed_at": "2026-10-05T18:06:19Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-05T18:06:19Z",
+          "completed_at": "2026-10-05T18:06:19Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:06:19Z",
+          "completed_at": "2026-10-05T18:06:19Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333496",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001169,
+      "runner_name": "GitHub Actions 1000001169",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111908333570,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDkGoAg",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111908333570",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111908333570",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:03:03Z",
+      "started_at": "2026-10-05T18:03:06Z",
+      "completed_at": "2026-10-05T18:15:20Z",
+      "name": "harden",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:03:07Z",
+          "completed_at": "2026-10-05T18:03:08Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:03:08Z",
+          "completed_at": "2026-10-05T18:03:09Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:03:09Z",
+          "completed_at": "2026-10-05T18:03:10Z"
+        },
+        {
+          "name": "Run pip install -r requirements-dev.txt -r requirements-ansible.txt && pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-05T18:03:10Z",
+          "completed_at": "2026-10-05T18:03:26Z"
+        },
+        {
+          "name": "Scan, harden, harden again, scan, report, gate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-05T18:03:26Z",
+          "completed_at": "2026-10-05T18:15:15Z"
+        },
+        {
+          "name": "Summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-05T18:15:15Z",
+          "completed_at": "2026-10-05T18:15:15Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-05T18:15:15Z",
+          "completed_at": "2026-10-05T18:15:18Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-05T18:15:18Z",
+          "completed_at": "2026-10-05T18:15:18Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-05T18:15:18Z",
+          "completed_at": "2026-10-05T18:15:18Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-05T18:15:18Z",
+          "completed_at": "2026-10-05T18:15:18Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111908333570",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001168,
+      "runner_name": "GitHub Actions 1000001168",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 111909973171,
+      "run_id": 37353023826,
+      "workflow_name": "ci",
+      "head_branch": "review-fixes",
+      "run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5T35M8AAAAaDlqssw",
+      "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+      "url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/actions/jobs/111909973171",
+      "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826/job/111909973171",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-05T18:06:57Z",
+      "started_at": "2026-10-05T18:07:35Z",
+      "completed_at": "2026-10-05T18:07:38Z",
+      "name": "molecule",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-05T18:07:36Z",
+          "completed_at": "2026-10-05T18:07:36Z"
+        },
+        {
+          "name": "Every role passed Molecule",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-05T18:07:36Z",
+          "completed_at": "2026-10-05T18:07:36Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-05T18:07:36Z",
+          "completed_at": "2026-10-05T18:07:36Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/santorest/lab-11-ansible-cis/check-runs/111909973171",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000001171,
+      "runner_name": "GitHub Actions 1000001171",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

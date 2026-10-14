@@ -8,7 +8,6 @@ date: "2026-10-05"
 time_to_reproduce: "Unos 30 minutos: una ejecución de CI (fork, habilitar Actions, ejecutar CI)"
 skills: [Ansible, OpenSCAP, SCAP Security Guide, CIS Benchmarks, Molecule, ansible-lint, Python, Ubuntu, GitHub Actions]
 frameworks: [CIS Ubuntu Linux 24.04 LTS Benchmark (nivel 1 – servidor), CIS Controls v8 (4.1, 4.2, 4.6, 4.7, 4.8, 5.2, 8.2), MITRE ATT&CK (T1021.004, T1548.003, T1562.001)]
-repo: "https://github.com/santorest/lab-11-ansible-cis"
 bundle: "Publicado en el sitio del portafolio con su suma SHA-256"
 ---
 
@@ -115,7 +114,7 @@ Se ejecuta en cada pull request, en cada push a `main`, semanalmente y a demanda
 
 ## 7. Resultados
 
-De la [ejecución 37353023826](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826) (2026-10-05), el código final
+De la ejecución 37353023826 (2026-10-05, archivada en `evidence/runs/37353023826/`), el código final
 tras las correcciones de la revisión; `docs/example-report.html` es su informe. OpenSCAP 1.3.9 (el paquete
 `openscap-scanner` del runner), SCAP Security Guide v0.1.82, perfil `cis_level1_server` (408 reglas seleccionadas).
 
@@ -136,7 +135,7 @@ tras las correcciones de la revisión; `docs/example-report.html` es su informe.
   - `no_files_unowned_by_user`: los únicos archivos sin propietario están dentro de las capas de imagen de Docker
     (`/var/lib/docker/overlay2`), cuyos UID solo existen dentro de los contenedores. El rol deja a propósito el
     almacenamiento de contenedores sin tocar — asignar esos archivos a root rompe los contenedores en un equipo real.
-- **La primera ejecución en verde**, [37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201), obtuvo 97,5 % (99,7 % sin
+- **La primera ejecución en verde**, 37330148201 (2026-10-05, archivada en `evidence/runs/37330148201/`), obtuvo 97,5 % (99,7 % sin
   excepciones) con solo el primer punto abierto: entonces el rol asignaba a root todos los archivos sin propietario,
   incluidas las capas de imagen de Docker. La revisión final lo señaló como inseguro en un servidor real; la caída de
   0,3 puntos es el precio de la corrección.
@@ -148,7 +147,7 @@ tras las correcciones de la revisión; `docs/example-report.html` es su informe.
   completo, más o menos lo mismo, porque los demás trabajos corren en paralelo.
 
 **Cómo se llegó ahí.** El primer ciclo completo
-([ejecución 37327562351](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37327562351)) ya obtuvo
+(ejecución 37327562351 (2026-10-05, archivada en `evidence/runs/37327562351/`)) ya obtuvo
 91,5 % (93,6 % sin excepciones), por encima del umbral del 90 %, y aun así la compuerta lo rechazó: una regresión,
 8 reglas declaradas que seguían fallando y una segunda ejecución que cambió algo. Cada causa salió de leer las
 verificaciones del propio escáner en el archivo de resultados; las correcciones están en la sección 8.
@@ -157,8 +156,8 @@ verificaciones del propio escáner en el archivo de resultados; las correcciones
 
 | PR | Cambio | Qué pasó |
 |---|---|---|
-| [#1](https://github.com/santorest/lab-11-ansible-cis/pull/1) | `PermitRootLogin yes` de SSH en los valores por defecto de `cis_access` | el puntaje se mantuvo en 97,2 % (99,4 % sin excepciones), por encima del umbral, pero la compuerta falló por la regla declarada `sshd_disable_root_login` (CIS 5.1.20); la verificación de Molecule de `cis_access` falló en su aserción `PermitRootLogin no` |
-| [#2](https://github.com/santorest/lab-11-ansible-cis/pull/2) | una tarea `shell` en `cis_maintenance` que escribe la fecha en un archivo de registro, sin `changed_when` | ansible-lint falló (`no-changed-when`); la prueba de idempotencia de Molecule falló para `cis_maintenance`; la compuerta de `harden` falló con "second run is not idempotent: localhost changed=1" aunque el puntaje era 97,5 % sin ninguna regla declarada fallando |
+| #1 (archivado en `evidence/prs/1/`) | `PermitRootLogin yes` de SSH en los valores por defecto de `cis_access` | el puntaje se mantuvo en 97,2 % (99,4 % sin excepciones), por encima del umbral, pero la compuerta falló por la regla declarada `sshd_disable_root_login` (CIS 5.1.20); la verificación de Molecule de `cis_access` falló en su aserción `PermitRootLogin no` |
+| #2 (archivado en `evidence/prs/2/`) | una tarea `shell` en `cis_maintenance` que escribe la fecha en un archivo de registro, sin `changed_when` | ansible-lint falló (`no-changed-when`); la prueba de idempotencia de Molecule falló para `cis_maintenance`; la compuerta de `harden` falló con "second run is not idempotent: localhost changed=1" aunque el puntaje era 97,5 % sin ninguna regla declarada fallando |
 
 ## 8. Lecciones
 

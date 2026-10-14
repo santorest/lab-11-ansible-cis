@@ -1,0 +1,13 @@
+diff --git a/roles/cis_access/defaults/main.yml b/roles/cis_access/defaults/main.yml
+index d716bf1..663074e 100644
+--- a/roles/cis_access/defaults/main.yml
++++ b/roles/cis_access/defaults/main.yml
+@@ -16,7 +16,7 @@ cis_access_sshd:
+   MaxSessions: "10"
+   MaxStartups: "10:30:60"
+   PermitEmptyPasswords: "no"
+-  PermitRootLogin: "no"
++  PermitRootLogin: "yes"
+   PermitUserEnvironment: "no"
+   UsePAM: "yes"
+ cis_access_ssh_allow_groups: [sudo]

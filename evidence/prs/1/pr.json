@@ -1,0 +1,277 @@
+{
+  "baseRefName": "main",
+  "body": "Demonstration PR: sets \\`PermitRootLogin yes\\` in the \\`cis_access\\` defaults.\n\nExpected: the \\`harden\\` gate fails (claimed rule \\`sshd_disable_root_login\\`, CIS 5.1.20, still fails after hardening) and the Molecule verify for \\`cis_access\\` fails on its assertion, so the ruleset blocks the merge. It will be closed unmerged.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+  "closedAt": "2026-10-05T15:42:20Z",
+  "commits": [
+    {
+      "authoredDate": "2026-10-05T15:24:05Z",
+      "authors": [
+        {
+          "email": "37381624+santorest@users.noreply.github.com",
+          "id": "MDQ6VXNlcjM3MzgxNjI0",
+          "login": "santorest",
+          "name": "Santiago Restrepo Sánchez"
+        },
+        {
+          "email": "noreply@anthropic.com",
+          "id": "MDQ6VXNlcjgxODQ3",
+          "login": "claude",
+          "name": "Claude Opus 5.5"
+        }
+      ],
+      "committedDate": "2026-10-05T15:24:05Z",
+      "messageBody": "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+      "messageHeadline": "demo: allow SSH root login (expected to be blocked)",
+      "oid": "1b8421593cc870f967c074a5cac3f73328c5cb19"
+    }
+  ],
+  "createdAt": "2026-10-05T15:24:10Z",
+  "headRefName": "demo/permit-root-login",
+  "mergedAt": null,
+  "number": 1,
+  "state": "CLOSED",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:25Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839432868",
+      "name": "lint",
+      "startedAt": "2026-10-05T15:25:15Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:27:48Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227650",
+      "name": "lint",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:25:30Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839432995",
+      "name": "unit",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:27:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227449",
+      "name": "unit",
+      "startedAt": "2026-10-05T15:26:59Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:45Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839432807",
+      "name": "molecule-role (cis_initial_setup)",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:29:00Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227395",
+      "name": "molecule-role (cis_initial_setup)",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:45Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839433286",
+      "name": "molecule-role (cis_services)",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:28:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227236",
+      "name": "molecule-role (cis_services)",
+      "startedAt": "2026-10-05T15:26:57Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:45Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839433146",
+      "name": "molecule-role (cis_network)",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:28:32Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227406",
+      "name": "molecule-role (cis_network)",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:47Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839433318",
+      "name": "molecule-role (cis_firewall)",
+      "startedAt": "2026-10-05T15:25:15Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:28:55Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227474",
+      "name": "molecule-role (cis_firewall)",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:29:47Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227479",
+      "name": "molecule-role (cis_access)",
+      "startedAt": "2026-10-05T15:26:59Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:43Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839433101",
+      "name": "molecule-role (cis_access)",
+      "startedAt": "2026-10-05T15:25:13Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:45Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839434075",
+      "name": "molecule-role (cis_logging)",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:28:54Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227412",
+      "name": "molecule-role (cis_logging)",
+      "startedAt": "2026-10-05T15:26:59Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:47Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839433406",
+      "name": "molecule-role (cis_maintenance)",
+      "startedAt": "2026-10-05T15:25:16Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:28:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227624",
+      "name": "molecule-role (cis_maintenance)",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:41:14Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840226896",
+      "name": "harden",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:47Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839432914",
+      "name": "harden",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:25:19Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111839432378",
+      "name": "secrets",
+      "startedAt": "2026-10-05T15:25:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:27:04Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111840227496",
+      "name": "secrets",
+      "startedAt": "2026-10-05T15:26:58Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:26:54Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332669504/job/111840171120",
+      "name": "molecule",
+      "startedAt": "2026-10-05T15:26:51Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:29:53Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37332819385/job/111841557295",
+      "name": "molecule",
+      "startedAt": "2026-10-05T15:29:50Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    }
+  ],
+  "title": "Demo: allow SSH root login (expected to be blocked)",
+  "url": "https://github.com/santorest/lab-11-ansible-cis/pull/1"
+}

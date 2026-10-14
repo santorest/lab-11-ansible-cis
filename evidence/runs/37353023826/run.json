@@ -1,0 +1,21 @@
+{
+  "id": 37353023826,
+  "name": "ci",
+  "head_sha": "5d74b5de1018bfb8174b75fb2cfb5f38ac6f0ef2",
+  "head_branch": "review-fixes",
+  "event": "pull_request",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-05T18:03:02Z",
+  "run_started_at": "2026-10-05T18:03:02Z",
+  "updated_at": "2026-10-05T18:15:21Z",
+  "run_attempt": 1,
+  "html_url": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826",
+  "artifacts": [
+    {
+      "name": "hardening-results",
+      "size_in_bytes": 11910491,
+      "expired": false
+    }
+  ]
+}
