@@ -1,0 +1,157 @@
+{
+  "baseRefName": "main",
+  "body": "Demonstration PR: adds to \\`cis_maintenance\\` a \\`shell\\` task that writes the date to /var/log/cis-last-run, without \\`changed_when\\`.\n\nExpected: \\`ansible-lint\\` fails (no-changed-when), Molecule idempotence fails, and the \\`harden\\` gate fails because the second run is not idempotent; the ruleset blocks the merge. It will be closed unmerged.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+  "closedAt": "2026-10-05T15:58:49Z",
+  "commits": [
+    {
+      "authoredDate": "2026-10-05T15:24:24Z",
+      "authors": [
+        {
+          "email": "37381624+santorest@users.noreply.github.com",
+          "id": "MDQ6VXNlcjM3MzgxNjI0",
+          "login": "santorest",
+          "name": "Santiago Restrepo Sánchez"
+        },
+        {
+          "email": "noreply@anthropic.com",
+          "id": "MDQ6VXNlcjgxODQ3",
+          "login": "claude",
+          "name": "Claude Opus 5.5"
+        }
+      ],
+      "committedDate": "2026-10-05T15:24:24Z",
+      "messageBody": "… blocked)\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+      "messageHeadline": "demo: record the last hardening run with a shell task (expected to be…",
+      "oid": "d5eceadffafb9350871d744f6ec51936962910a2"
+    }
+  ],
+  "createdAt": "2026-10-05T15:42:27Z",
+  "headRefName": "demo/non-idempotent-task",
+  "mergedAt": null,
+  "number": 2,
+  "state": "CLOSED",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:44:16Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703832",
+      "name": "lint",
+      "startedAt": "2026-10-05T15:43:15Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:43:33Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703934",
+      "name": "unit",
+      "startedAt": "2026-10-05T15:43:17Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:45:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703699",
+      "name": "molecule-role (cis_initial_setup)",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:45:24Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703983",
+      "name": "molecule-role (cis_services)",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:45:34Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847704098",
+      "name": "molecule-role (cis_network)",
+      "startedAt": "2026-10-05T15:43:15Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:45:06Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847704123",
+      "name": "molecule-role (cis_firewall)",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:46:08Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703845",
+      "name": "molecule-role (cis_access)",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:45:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703990",
+      "name": "molecule-role (cis_logging)",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:44:58Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847704012",
+      "name": "molecule-role (cis_maintenance)",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:57:57Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703722",
+      "name": "harden",
+      "startedAt": "2026-10-05T15:43:14Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:43:23Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111847703354",
+      "name": "secrets",
+      "startedAt": "2026-10-05T15:43:15Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-05T15:46:15Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/santorest/lab-11-ansible-cis/actions/runs/37335081400/job/111849046015",
+      "name": "molecule",
+      "startedAt": "2026-10-05T15:46:12Z",
+      "status": "COMPLETED",
+      "workflowName": "ci"
+    }
+  ],
+  "title": "Demo: non-idempotent shell task (expected to be blocked)",
+  "url": "https://github.com/santorest/lab-11-ansible-cis/pull/2"
+}

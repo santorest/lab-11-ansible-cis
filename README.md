@@ -15,7 +15,7 @@ rules that check it.
 
 ## Results
 
-From [run 37353023826](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826) (final code; OpenSCAP 1.3.9,
+From run 37353023826 (2026-10-05, archived in `evidence/runs/37353023826/`) (final code; OpenSCAP 1.3.9,
 SSG v0.1.82, 408 selected rules); [`docs/example-report.html`](docs/example-report.html) is its report.
 
 | | Before | After |

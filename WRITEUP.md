@@ -8,7 +8,6 @@ date: "2026-10-05"
 time_to_reproduce: "About 30 minutes: one CI run (fork, enable Actions, run CI)"
 skills: [Ansible, OpenSCAP, SCAP Security Guide, CIS Benchmarks, Molecule, ansible-lint, Python, Ubuntu, GitHub Actions]
 frameworks: [CIS Ubuntu Linux 24.04 LTS Benchmark (Level 1 – Server), CIS Controls v8 (4.1, 4.2, 4.6, 4.7, 4.8, 5.2, 8.2), MITRE ATT&CK (T1021.004, T1548.003, T1562.001)]
-repo: "https://github.com/santorest/lab-11-ansible-cis"
 bundle: "Published on the portfolio site with its SHA-256 checksum"
 ---
 
@@ -111,7 +110,7 @@ It runs on every pull request, on pushes to `main`, weekly and on demand.
 
 ## 7. Results
 
-From [run 37353023826](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37353023826) (2026-10-05), the final code after the
+From run 37353023826 (2026-10-05, archived in `evidence/runs/37353023826/`), the final code after the
 review fixes; `docs/example-report.html` is its report. OpenSCAP 1.3.9 (the runner's `openscap-scanner` package),
 SCAP Security Guide v0.1.82, profile `cis_level1_server` (408 selected rules).
 
@@ -132,7 +131,7 @@ SCAP Security Guide v0.1.82, profile `cis_level1_server` (408 selected rules).
   - `no_files_unowned_by_user`: the only unowned files are inside Docker's image layers (`/var/lib/docker/overlay2`),
     whose UIDs exist only inside containers. The role deliberately leaves container storage alone — giving those
     files to root breaks containers on a real host.
-- **The first green run**, [37330148201](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37330148201), scored 97.5 % (99.7 % excluding
+- **The first green run**, 37330148201 (2026-10-05, archived in `evidence/runs/37330148201/`), scored 97.5 % (99.7 % excluding
   exceptions) with only the first open item: the role then gave every unowned file to root, Docker's image layers
   included. The final review flagged that as unsafe on a real server; the 0.3-point drop is the price of the fix.
 - **Applicability moved too** (not applicable 64 → 53): 15 rules became applicable and pass — 12 password-quality
@@ -143,7 +142,7 @@ SCAP Security Guide v0.1.82, profile `cis_level1_server` (408 selected rules).
   since the other jobs run in parallel.
 
 **How it got there.** The first complete cycle
-([run 37327562351](https://github.com/santorest/lab-11-ansible-cis/actions/runs/37327562351)) already scored 91.5 %
+(run 37327562351 (2026-10-05, archived in `evidence/runs/37327562351/`)) already scored 91.5 %
 (93.6 % excluding exceptions), over the 90 % threshold, and the gate still failed it: one regression, 8 claimed rules
 still failing and a second run that changed something. Each cause came from reading the scanner's own checks in
 the results file, and the fixes are in section 8.
@@ -152,8 +151,8 @@ the results file, and the fixes are in section 8.
 
 | PR | Change | What happened |
 |---|---|---|
-| [#1](https://github.com/santorest/lab-11-ansible-cis/pull/1) | SSH `PermitRootLogin yes` in the `cis_access` defaults | the score stayed at 97.2 % (99.4 % excluding exceptions), over the threshold, but the gate failed on the claimed rule `sshd_disable_root_login` (CIS 5.1.20); Molecule verify for `cis_access` failed on its `PermitRootLogin no` assertion |
-| [#2](https://github.com/santorest/lab-11-ansible-cis/pull/2) | a `shell` task in `cis_maintenance` that writes the date to a log file, without `changed_when` | ansible-lint failed (`no-changed-when`); Molecule's idempotence test failed for `cis_maintenance`; the `harden` gate failed with "second run is not idempotent: localhost changed=1" although the score was 97.5 % with no claimed rule failing |
+| #1 (archived in `evidence/prs/1/`) | SSH `PermitRootLogin yes` in the `cis_access` defaults | the score stayed at 97.2 % (99.4 % excluding exceptions), over the threshold, but the gate failed on the claimed rule `sshd_disable_root_login` (CIS 5.1.20); Molecule verify for `cis_access` failed on its `PermitRootLogin no` assertion |
+| #2 (archived in `evidence/prs/2/`) | a `shell` task in `cis_maintenance` that writes the date to a log file, without `changed_when` | ansible-lint failed (`no-changed-when`); Molecule's idempotence test failed for `cis_maintenance`; the `harden` gate failed with "second run is not idempotent: localhost changed=1" although the score was 97.5 % with no claimed rule failing |
 
 ## 8. Lessons
 
